@@ -5,11 +5,10 @@
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
-        "seed": "node ./seeds/seed.js",
         "watch": "nodemon server.js"
     },
     "author": "",
-    "license": "ISC",
+    "license": "MIT",
     "dependencies": {
         "express": "^4.17.1"
     },
