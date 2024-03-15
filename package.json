@@ -1,0 +1,47 @@
+{
+    "name": "nftapi-demo",
+    "version": "0.0.1",
+    "private": true,
+    "description": "showcase Alchemy's NFT API",
+    "scripts": {
+        "start": "node server/server.js",
+        "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm start\"",
+        "install": "cd server && npm i && cd ../client && npm i",
+        "seed": "cd server && npm run seed",
+        "build": "cd client && npm run build"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "engines": {
+        "node": "16.18.0"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "concurrently": "^5.1.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:DraconMarius/nftapi-demo.git"
+    },
+    "author": "Mari K. Ma",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/DraconMarius/nftapi-demo/issues"
+    },
+    "homepage": "https://github.com/DraconMarius/nftapi-demo#readme"
+}
