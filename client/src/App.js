@@ -1,24 +1,38 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+//db get
+import { getAPIKey } from './util/idb';
+//components import
+import Nav from './cont/Nav';
+//evergreen import
+import { Pane, Button } from 'evergreen-ui';
+
+
 
 function App() {
+
+  const db = getAPIKey()
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Pane>
+      <Nav db={db}></Nav>
+      <Pane>
+
+        <Router>
+          {/* <PageContainer> */}
+          {/* <Nav /> */}
+          {/* react router to handle change of page */}
+          <Routes>
+            {/* <Route exact path="/" element={<HomeContainer />} /> */}
+            {/* <Route exact path="/Search" element={<SarchContainer />} /> */}
+            {/* <Route exact path="/readme" element={<ReadMe />} /> */}
+          </Routes>
+
+        </Router>
+      </Pane>
+      {/* <Footer /> */}
+    </Pane >
   );
 }
 

@@ -38,6 +38,7 @@ export const getAPIKey = async () => {
     const store = tx.objectStore('demoDB');
     const req = store.getAll();
     const res = await (req);
+    console.log(res)
     return res;
 }
 
