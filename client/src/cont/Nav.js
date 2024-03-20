@@ -43,10 +43,10 @@ function Nav({ apikey }) {
                     {/* if api key exists, show setting, if not show setup */}
                     {apikey ? (
                         <>
-                            <Button marginRight={16} text-decoration="none"
+                            <Button marginRight={16} textDecoration="none"
                                 color="inherit">
                                 <Link to="/search"
-                                    text-decoration="none"
+                                    textDecoration="none"
                                     color="inherit"
                                 >Search</Link>
                             </Button>

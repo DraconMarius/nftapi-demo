@@ -40,7 +40,7 @@ function App() {
         {/* react router to handle change of page */}
         <Routes>
           {/* <Route exact path="/" element={<HomeContainer />} /> */}
-          <Route exact path="/search" element={<Search />} />
+          <Route exact path="/search" element={<Search apikey={key} />} />
           {/* <Route exact path="/readme" element={<ReadMe />} /> */}
         </Routes>
 
