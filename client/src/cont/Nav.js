@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-// import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import logo from '../assets/alchemylogo.png';
 
@@ -43,7 +43,14 @@ function Nav({ apikey }) {
                     {/* if api key exists, show setting, if not show setup */}
                     {apikey ? (
                         <>
-                            <Button marginRight={16}>Search</Button>
+                            <Button marginRight={16} text-decoration="none"
+                                color="inherit">
+                                <Link to="/search"
+                                    text-decoration="none"
+                                    color="inherit"
+                                >Search</Link>
+                            </Button>
+                            {/* <Button marginRight={16}>Pinned</Button> */}
                             <Button appearance='primary' onClick={() => setIsShown(true)}>Setting</Button>
                         </>
                     ) : (

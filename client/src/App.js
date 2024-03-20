@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { getAPIKey, initdb, resetDB } from './util/idb';
 //components import
 import Nav from './cont/Nav';
+import Search from './cont/Search'
 //evergreen import
 import { Pane, Button } from 'evergreen-ui';
 
@@ -33,21 +34,17 @@ function App() {
 
   return (
     <Pane>
-      <Nav apikey={key}></Nav>
-      <Pane>
 
-        <Router>
-          {/* <PageContainer> */}
-          {/* <Nav /> */}
-          {/* react router to handle change of page */}
-          <Routes>
-            {/* <Route exact path="/" element={<HomeContainer />} /> */}
-            {/* <Route exact path="/Search" element={<SarchContainer />} /> */}
-            {/* <Route exact path="/readme" element={<ReadMe />} /> */}
-          </Routes>
+      <Router>
+        <Nav apikey={key}></Nav>
+        {/* react router to handle change of page */}
+        <Routes>
+          {/* <Route exact path="/" element={<HomeContainer />} /> */}
+          <Route exact path="/search" element={<Search />} />
+          {/* <Route exact path="/readme" element={<ReadMe />} /> */}
+        </Routes>
 
-        </Router>
-      </Pane>
+      </Router>
       {/* <Footer /> */}
     </Pane >
   );
