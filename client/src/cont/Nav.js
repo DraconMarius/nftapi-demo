@@ -95,6 +95,7 @@ function Nav({ apikey }) {
                                                 if (newKey) {
                                                     handleChange(newKey);
                                                     setnewKey('');
+                                                    alert(`new key updated`)
                                                 } else {
                                                     alert("no new key");
                                                 }
