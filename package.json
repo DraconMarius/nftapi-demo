@@ -39,6 +39,9 @@
     },
     "author": "Mari K. Ma",
     "license": "MIT",
+    "dependencies": {
+        "dotenv": "^8.2.0"
+    },
     "bugs": {
         "url": "https://github.com/DraconMarius/nftapi-demo/issues"
     },
