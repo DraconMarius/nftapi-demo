@@ -16,19 +16,19 @@ function App() {
 
   const [key, setKey] = useState();
 
-  useEffect(() => {
-    (async function dbSetup() {
-      // await resetDB()
-      const db = await getAPIKey()
-      let apiKey = db[0]
+  // useEffect(() => {
+  //   (async function dbSetup() {
+  //     // await resetDB()
+  //     const db = await getAPIKey()
+  //     let apiKey = db[0]
 
 
-      console.log("apiKey", apiKey["key"]);
-      console.log("db", db);
-      setKey(apiKey["key"])
-      console.log("current key state", key)
-    })();
-  }, [key]);
+  //     console.log("apiKey", apiKey["key"]);
+  //     console.log("db", db);
+  //     setKey(apiKey["key"])
+  //     console.log("current key state", key)
+  //   })();
+  // }, [key]);
 
   // console.log("key", key)
 
