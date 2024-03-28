@@ -48,6 +48,8 @@ const configs = {
 
 // //testing
 
+
+// api/balance/wallet/0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE
 router.get('/balance/wallet/:address', async (req, res) => {
     console.log('==============/Token/wallet==============')
     const address = req.params.address
@@ -80,7 +82,65 @@ router.get('/balance/wallet/:address', async (req, res) => {
     };
 })
 
+// /api/nft/wallet/Eth/0xe785E82358879F061BC3dcAC6f0444462D4b5330/page?pgKey=``
+router.get('/nft/wallet/:net/:address/page', async (req, res) => {
+    console.log('==============/NFT/page==============')
+    const address = req.params.address
+    const net = req.params.net
+    const pgKey = req.query.pgKey
+    console.log(pgKey)
+    const config = configs[net]
 
+
+    const pageNFT = async (config, address, pgKey) => {
+
+        const alchemy = new Alchemy(config);
+        let options = {
+            pageKey: pgKey
+        }
+
+        try {
+            const nfts = await alchemy.nft.getNftsForOwner(address, config, options)
+            console.log(`completed ${net}, totalCount: ${nfts.totalCount}`);
+            //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
+            return {
+                [net]: {
+                    nfts,
+                    "pageKey": nfts.pageKey
+                }
+            };
+        } catch (err) {
+            console.error(`Failed to fetch next page for ${net} network`, err);
+            return { [net]: { error: `Failed to fetch next page for ${net} network`, details: err.message } };
+        }
+    }
+    try {
+        const result = await pageNFT(config, address, pgKey);
+
+        // Check if an error was returned and respond accordingly
+        if (result.error) {
+            console.error('Error fetching NFT:', result.details);
+            return res.status(500).json(result.details); // Send back the structured error
+        }
+
+        console.log('Result:', result);
+        res.json(result); // Send success response
+    } catch (err) {
+        console.error('Unexpected error:', err);
+        // Respond with generic error message if not already sent
+        if (!res.headersSent) {
+            res.status(500).json({
+                error: true,
+                message: 'An unexpected error occurred.',
+                details: err.message
+            });
+        }
+    }
+
+});
+
+//get all nft owned by an address
+//
 router.get('/nft/wallet/:address', async (req, res) => {
     console.log('==============/NFT/wallet==============')
     const address = req.params.address
@@ -114,6 +174,7 @@ router.get('/nft/wallet/:address', async (req, res) => {
         try {
             const nfts = await alchemy.nft.getNftsForOwner(address);
             console.log(`completed ${net}, totalCount: ${nfts.totalCount}`);
+            console.log(`${net}, pageKey: ${nfts.pageKey}`)
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
             return {
                 [net]: {
@@ -146,7 +207,7 @@ router.get('/nft/wallet/:address', async (req, res) => {
 });
 
 
-
+//get NFT given contract address or slug name
 router.get('/nft/collection/:net', async (req, res) => {
     console.log('==============/NFT/collection==============')
     console.log(` network selcted: ${req.params.net}  `)
@@ -205,5 +266,7 @@ router.get('/nft/collection/:net', async (req, res) => {
     };
 
 })
+
+
 
 module.exports = router;
