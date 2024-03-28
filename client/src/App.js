@@ -10,41 +10,26 @@ import Search from './cont/Search'
 //evergreen import
 import { Pane, Button } from 'evergreen-ui';
 
+import { SearchProvider } from './cont/searchContex'
 
 
 function App() {
 
-  const [key, setKey] = useState();
-
-  useEffect(() => {
-    (async function dbSetup() {
-      // await resetDB()
-      const db = await getAPIKey()
-      let apiKey = db[0]
-
-
-      console.log("apiKey", apiKey["key"]);
-      console.log("db", db);
-      setKey(apiKey["key"])
-      console.log("current key state", key)
-    })();
-  }, [key]);
-
-  // console.log("key", key)
 
   return (
     <Pane>
+      <SearchProvider>
+        <Router>
+          <Nav></Nav>
+          {/* react router to handle change of page */}
+          <Routes>
+            {/* <Route exact path="/" element={<HomeContainer />} /> */}
+            <Route exact path="/search" element={<Search />} />
+            {/* <Route exact path="/readme" element={<ReadMe />} /> */}
+          </Routes>
 
-      <Router>
-        <Nav apikey={key}></Nav>
-        {/* react router to handle change of page */}
-        <Routes>
-          {/* <Route exact path="/" element={<HomeContainer />} /> */}
-          <Route exact path="/search" element={<Search apikey={key} />} />
-          {/* <Route exact path="/readme" element={<ReadMe />} /> */}
-        </Routes>
-
-      </Router>
+        </Router>
+      </SearchProvider>
       {/* <Footer /> */}
     </Pane >
   );
