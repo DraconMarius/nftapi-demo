@@ -14,7 +14,7 @@ const configs = {
         apiKey: Key,
         network: 'polygon-mainnet'
     },
-    Aritrum: {
+    Arbitrum: {
         apiKey: Key,
         network: "arbitrum-mainnet"
     },
@@ -226,9 +226,11 @@ router.get('/nft/collection/:net', async (req, res) => {
         const config = { ...configs[net] }
         console.log(config)
 
-        let finalInput = input.contractAdd ?
-            `contractAddress=${input.contractAdd}` :
-            `collectionSlug=${input.slug}`;
+        // let finalInput = input.contractAdd ?
+        //     `contractAddress=${input.contractAdd}` :
+        //     `collectionSlug=${input.slug}`;
+
+        let finalInput = `contractAdd=${input.contractAdd}`;
 
         //sdk doesn't support slug name? using axios to fetch the collection endpoint which support slug names
         const options = {

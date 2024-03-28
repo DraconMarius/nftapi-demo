@@ -1,30 +1,64 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import logo from '../assets/alchemylogo.png';
 
-import { Pane, Button, Dialog, Autocomplete, TextInputField } from 'evergreen-ui';
+import { useSearch } from './searchContex'
+
+import {
+    Pane,
+    Select,
+    SearchInput,
+    TextInput,
+    SearchIcon,
+    Button,
+    Overlay,
+    Spinner,
+    Position,
+    Paragraph,
+    Group,
+    IconButton
+} from 'evergreen-ui';
 
 import { updateAPIKey, deleteKey } from '../util/idb';
 
 
-function Nav({ apikey }) {
+
+function Nav() {
     //dialog state
     // console.log(apikey)
-    const [isShown, setIsShown] = useState(false)
-    //API Key State, from db
+    const [type, setType] = useState('walletAdd')
+    const [string, setString] = useState('')
+    const [net, setNet] = useState('')
+    const [NetOp, setNetOp] = useState(false)
+    const { searchParams, setSearchParams, resetSearchParams } = useSearch();
 
-    const [newKey, setnewKey] = useState(``);
 
-    // console.log(keyRef.current)
-
-    const handleChange = async (newKey) => {
-        await updateAPIKey(newKey);
-        console.log("currentkey", apikey)
-        console.log("newKey", newKey)
+    const handleChange = (type, string) => {
+        // Update based on type and input
+        setNet('')
+        resetSearchParams()
+        setSearchParams(type, string);
     }
 
-    // updateAPIKey("testing")
+    const handleChangeWithNet = (type, string, net) => {
+        resetSearchParams()
+        setSearchParams(type, string);
+        setSearchParams("network", net);
+    }
+
+
+    useEffect(() => {
+        console.log(searchParams);
+    }, [searchParams]);
+
+
+    useEffect(() => {
+        console.log(type);
+        (type == "collectionAdd" || type == "contractAdd") ?
+            setNetOp(true) : setNetOp(false)
+
+    }, [type]);
 
 
     return (
@@ -39,76 +73,44 @@ function Nav({ apikey }) {
 
                     </a>
                 </Pane>
-                <Pane display='flex' alignItems='center'>
-                    {/* if api key exists, show setting, if not show setup */}
-                    {apikey ? (
-                        <>
-                            <Button marginRight={16} textDecoration="none"
+                <Pane display='flex' alignItems='center' justifyContent="center" >
+                    <>
+                        <Select value={type} onChange={e => setType(e.target.value)}>
+                            <option value="walletAdd">Wallet</option>
+                            <option value="contractAdd">NFTContract</option>
+                            <option value="collectionAdd">Collection</option>
+                        </Select>
+
+                        {NetOp ? (<Select value={net} onChange={e => setNet(e.target.value)}>
+                            <option value="Eth">Ethereum</option>
+                            <option value="Polygon">Polygon</option>
+                            <option value="Arbitrum">Arbitrum</option>
+                            <option value="Optimism">Optimism</option>
+                        </Select>) : <></>}
+
+                        <Pane display='flex' alignItems='center' justifyContent="center">
+
+                            <TextInput
+                                placeholder="Search..."
+                                onChange={e => setString(e.target.value)}
+                            />
+                        </Pane>
+                    </>
+                    {!NetOp ? (
+                        <Link to="/search" >
+                            <Button
+                                onClick={() => handleChange(type, string)}
                                 color="inherit">
-                                <Link to="/search"
-                                    textDecoration="none"
-                                    color="inherit"
-                                >Search</Link>
+                                <SearchIcon />
                             </Button>
-                            {/* <Button marginRight={16}>Pinned</Button> */}
-                            <Button appearance='primary' onClick={() => setIsShown(true)}>Setting</Button>
-                        </>
-                    ) : (
-                        <Button appearance='primary' onClick={() => setIsShown(true)}>API Key Setup</Button>
-                    )}
-                    {/* Setting pop up */}
-                    <Pane>
-                        <Dialog
-                            isShown={isShown}
-                            title="API Key Setting"
-                            onCloseComplete={() => {
-                                // newKey ? handleChange(newKey) : alert("no new key")
-
-                                setIsShown(false)
-                            }}
-                            confirmLabel="Update API Key"
-                            hasFooter={false}
-
-                        >
-                            {({ close }) => (
-
-                                <Pane>
-                                    <TextInputField
-                                        label="Please input your API Key here"
-                                        alignItems='center'
-                                        required
-                                        description="you can get a free key @ Alchemy.com"
-                                        placeholder={apikey}
-                                        onChange={e => {
-                                            setnewKey(e.target.value)
-                                            // (console.log(e.target.value))
-                                        }
-                                        }
-                                    />
-                                    <Pane display="flex" justifyContent="flex-end" marginTop="8px">
-                                        <Button
-                                            marginBottom='8px'
-                                            // alignItems='center'
-                                            position='BOTTOM_RIGHT'
-                                            appearance="primary"
-                                            onClick={() => {
-                                                if (newKey) {
-                                                    handleChange(newKey);
-                                                    setnewKey('');
-                                                    alert(`new key updated`)
-                                                } else {
-                                                    alert("no new key");
-                                                }
-                                                close()
-                                            }}>
-
-                                            Update Key
-                                        </Button>
-                                    </Pane>
-                                </Pane>
-                            )}
-                        </Dialog>
-                    </Pane>
+                        </Link>
+                    ) : <Link to="/search" >
+                        <Button
+                            onClick={() => handleChangeWithNet(type, string, net)}
+                            color="inherit">
+                            <SearchIcon />
+                        </Button>
+                    </Link>}
                 </Pane >
             </Pane >
 

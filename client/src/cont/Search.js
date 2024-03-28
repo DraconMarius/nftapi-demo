@@ -3,6 +3,15 @@ import React, { useState, useEffect } from 'react';
 
 import Display from './Display';
 
+import { useSearch } from './searchContex'
+
+import {
+    getNFTsForOwner,
+    getNFTsCollection,
+    getNFTsPage,
+    getTokenBalnce
+} from '../util/alchemyapi';
+
 import {
     Pane,
     Select,
@@ -17,9 +26,8 @@ import {
     IconButton
 } from 'evergreen-ui';
 
-function Search({ apikey }) {
-    const [searchString, setSearchString] = useState('');
-    const [searchType, setSearchType] = useState('Wallet');
+function Search() {
+    const { searchCriteria } = useSearch()
     const [searching, setSearching] = useState(false);
     const [apiRes, setApiRes] = useState({});
     const [loading, setLoading] = useState(false)
@@ -27,17 +35,16 @@ function Search({ apikey }) {
 
     const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
+    // useEffect(() => {
+    //     console.log(searchCriteria)
+    //     if (searchCriteria.walletAdd) {
+    //         getNFTsForOwner(searchCriteria.walletAdd)
+
+    //     }
+    //     if (searchCriteria.)
+    // }, [searchCriteria]);
 
 
-    const handleSearch = async (apikey) => {
-        console.log(`Searching for: ${searchString} in ${searchType} using key ${apikey}`)
-
-
-        setLoading(true)
-        console.log("after loading and get all info from api call")
-        setLoading(false)
-        setSearching(true)
-    };
 
     return (
         <>
@@ -45,74 +52,7 @@ function Search({ apikey }) {
                 <Overlay isShown={loading}>
                     <Spinner marginX="auto" marginY={120} />
                 </Overlay>
-                {searching ? (
-                    <Pane>
-                        <Pane position="relative" width="100%">
-                            {/* Drawer toggle tab */}
-                            <Pane
-                                position="TOP"
-                                transition="3sec"
-                                elevation={2}
-                                zIndex={1}
-                            >
-                                {/* Tab content and toggle search button */}
-                                <Pane padding={16} display="flex" alignItems="center" justifyContent="center">
-                                    <IconButton icon={isDrawerOpen ? ZoomOutIcon : ZoomInIcon} onClick={toggleDrawer} />
-                                </Pane>
-                                <Pane padding={16} display={isDrawerOpen ? 'block' : 'none'}>
-                                    <Pane padding={40} display="flex" alignItems="center" justifyContent="center" flexDirection="column">
-                                        <Pane marginBottom={20} width="100%" maxWidth={400}>
-                                            <SearchInput
-                                                placeholder="Enter your search..."
-                                                // value={searchString}
-                                                onChange={e => setSearchString(e.target.value)}
-                                                width={400}
 
-                                            />
-                                        </Pane>
-                                        <Pane marginBottom={20} width="100%" maxWidth={400}>
-                                            <Select width="100%" value={searchType} onChange={e => setSearchType(e.target.value)}>
-                                                <option value="Wallet">Wallet</option>
-                                                <option value="Collection">Collection</option>
-                                                <option value="Contract">Contract</option>
-                                                <option value="NFT">NFT</option>
-                                            </Select>
-                                        </Pane>
-                                        <Button appearance="primary" onClick={() => { handleSearch(apikey).then(toggleDrawer) }}>Search</Button>
-                                    </Pane >
-                                </Pane>
-                            </Pane>
-                        </Pane>
-                        {isDrawerOpen ? (<></>) : (
-
-                            <Pane padding={16} display="flex" alignItems="center" justifyContent="center" flexDirection="column">
-                                <Display res={apiRes} type={searchType} />
-                            </Pane>
-                        )}
-                    </Pane>
-                ) :
-
-                    (<Pane padding={40} display="flex" alignItems="center" justifyContent="center" flexDirection="column">
-                        <Pane marginBottom={20} width="100%" maxWidth={400}>
-                            <SearchInput
-                                placeholder="Enter your search..."
-                                // value={searchString}
-                                onChange={e => setSearchString(e.target.value)}
-                                width={400}
-
-                            />
-                        </Pane>
-                        <Pane marginBottom={20} width="100%" maxWidth={400}>
-                            <Select width="100%" value={searchType} onChange={e => setSearchType(e.target.value)}>
-                                <option value="Wallet">Wallet</option>
-                                <option value="Collection">Collection</option>
-                                <option value="Contract">Contract</option>
-                                <option value="NFT">NFT</option>
-                            </Select>
-                        </Pane>
-                        <Button appearance="primary" onClick={() => handleSearch(apikey)}>Search</Button>
-                    </Pane >)
-                }
             </Pane >
         </>
     );
