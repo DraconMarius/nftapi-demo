@@ -9,7 +9,7 @@ import {
     getNFTsForOwner,
     getNFTsCollection,
     getNFTsPage,
-    getTokenBalnce
+    getTokenBalance
 } from '../util/alchemyapi';
 
 import {
@@ -27,22 +27,56 @@ import {
 } from 'evergreen-ui';
 
 function Search() {
-    const { searchCriteria } = useSearch()
+    const { searchParams } = useSearch()
     const [searching, setSearching] = useState(false);
     const [apiRes, setApiRes] = useState({});
     const [loading, setLoading] = useState(false)
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [type, setType] = useState()
+    //storing pgKey response
+    const [pgKey, setPgKey] = useState([]);
 
-    const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+    const fetchServer = async (searchParams) => {
+        setLoading(true)
+        let data
+        try {
+            if (searchParams.walletAdd) {
+                data = await getNFTsForOwner(searchParams.walletAdd);
+                // getTokenBalance(searchCriteria.walletAdd)
+                setType('wallet')
 
-    // useEffect(() => {
-    //     console.log(searchCriteria)
-    //     if (searchCriteria.walletAdd) {
-    //         getNFTsForOwner(searchCriteria.walletAdd)
+            } else if (searchParams.collectionAdd) {
+                data = await getNFTsCollection(searchParams.network,
+                    searchParams.collectionAdd)
+                setType('collection')
 
-    //     }
-    //     if (searchCriteria.)
-    // }, [searchCriteria]);
+            } else {
+                setType('error')
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error)
+            setType('error')
+        }
+        setLoading(false);
+        return data
+    }
+
+    // const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+
+    useEffect(() => {
+        //fetch everytime search provider param is changed
+        //change based on searchParams availability
+
+        const res = fetchServer(searchParams);
+        setApiRes(res)
+        // if (searchCriteria.contractAdd) {
+        //  setApiRes(getNFT(searchCriteria.network),searchCriteria.contractAdd)
+        // }
+    }, [searchParams]);
+
+    useEffect(() => {
+        console.log(apiRes)
+    }, [apiRes])
 
 
 
@@ -52,8 +86,9 @@ function Search() {
                 <Overlay isShown={loading}>
                     <Spinner marginX="auto" marginY={120} />
                 </Overlay>
-
             </Pane >
+            {/* <SearchDisp apiRes={apiRes} /> */}
+            <><Pane>Testing: {type}</Pane></>
         </>
     );
 }
