@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { Alchemy, Network } from 'alchemy-sdk';
 
-import Display from './Display';
+import Display from './Disp';
 
 import { useSearch } from './searchContex'
 
@@ -28,15 +28,14 @@ import {
 
 function Search() {
     const { searchParams } = useSearch()
-    const [searching, setSearching] = useState(false);
     const [apiRes, setApiRes] = useState({});
     const [loading, setLoading] = useState(false)
     // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [type, setType] = useState()
+    const [type, setType] = useState("default")
     //storing pgKey response
     const [pgKey, setPgKey] = useState([]);
 
-    const fetchServer = async (searchParams) => {
+    const fetchServer = async () => {
         setLoading(true)
         let data
         try {
@@ -51,14 +50,15 @@ function Search() {
                 setType('collection')
 
             } else {
-                setType('error')
+                setType('default')
             }
+            setLoading(false);
+            return data
         } catch (error) {
             console.error("Error fetching data:", error)
             setType('error')
+            return null
         }
-        setLoading(false);
-        return data
     }
 
     // const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
@@ -66,17 +66,18 @@ function Search() {
     useEffect(() => {
         //fetch everytime search provider param is changed
         //change based on searchParams availability
+        const fetchData = async () => {
+            const data = await fetchServer(searchParams);
+            setApiRes(data); // Set the resolved data
+        };
 
-        const res = fetchServer(searchParams);
-        setApiRes(res)
-        // if (searchCriteria.contractAdd) {
-        //  setApiRes(getNFT(searchCriteria.network),searchCriteria.contractAdd)
-        // }
+        // Call the async function
+        fetchData();
     }, [searchParams]);
 
-    useEffect(() => {
-        console.log(apiRes)
-    }, [apiRes])
+    // useEffect(() => {
+    //     console.log(apiRes)
+    // }, [apiRes])
 
 
 
@@ -87,8 +88,10 @@ function Search() {
                     <Spinner marginX="auto" marginY={120} />
                 </Overlay>
             </Pane >
-            {/* <SearchDisp apiRes={apiRes} /> */}
-            <><Pane>Testing: {type}</Pane></>
+            {(type === "default") ?
+                <Pane>DEFAULT</Pane> :
+                <Display apiRes={apiRes} type={type} />
+            }
         </>
     );
 }
