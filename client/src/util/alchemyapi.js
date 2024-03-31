@@ -6,7 +6,7 @@ export const getNFTsForOwner = async (address) => {
 
     try {
         const response = await fetch(`/api/nft/wallet/${address}`);
-        if (!response.ok) throw new Error('nft wallet fetch error');
+        if (!response.ok) throw new Error('nft wallet fetch error', response.error);
 
         const data = await response.json();
 
@@ -17,7 +17,7 @@ export const getNFTsForOwner = async (address) => {
 
 }
 
-export const getTokenBalnce = async (address) => {
+export const getTokenBalance = async (address) => {
     try {
         const response = await fetch(`/api/token/wallet/${address}`);
         if (!response.ok) throw new Error('token fetch error');
@@ -46,7 +46,17 @@ export const getNFTsPage = async (net, address, pgKey) => {
 export const getNFTsCollection = async (net, address) => {
     try {
         const response = await fetch(`/api/nft/collection/${net}?contractAdd=${address}`)
+
+        const data = await response.json();
+
+        return data;
     } catch (err) {
         console.error(`Failed to fetch NFT for ${address}, on ${net}`, err)
     }
 }
+
+// export const getNFT = async (net, address) => {
+//     try {
+//         const response = await fetch(`/api/nft/${net}`)
+//     }
+// }

@@ -16,11 +16,11 @@ const configs = {
     },
     Arbitrum: {
         apiKey: Key,
-        network: "arbitrum-mainnet"
+        network: "arb-mainnet"
     },
     Optimism: {
         apiKey: Key,
-        network: "optimism-mainnet"
+        network: "opt-mainnet"
     }
 };
 
@@ -74,7 +74,7 @@ router.get('/balance/wallet/:address', async (req, res) => {
             )
         )
         // Combine the results into a single array
-        const combinedResults = results.reduce((acc, result) => ({ ...acc, ...result }), {});
+        const combinedResults = results.reduce((net, result) => ({ ...net, ...result }), {});
         res.json([combinedResults]);
     } catch (err) {
         console.log(err);
@@ -197,9 +197,9 @@ router.get('/nft/wallet/:address', async (req, res) => {
             )
         );
         // Combine the results into a single array
-        const combinedResults = results.reduce((acc, result) => ({ ...acc, ...result }), {});
+        const combinedResults = results.reduce((net, result) => ({ ...net, ...result }), {});
 
-        res.json([combinedResults]);
+        res.json(combinedResults);
     } catch (err) {
         console.log(err);
         res.status(500).json(err);

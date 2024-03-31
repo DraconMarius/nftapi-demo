@@ -55,7 +55,7 @@ function Nav() {
 
     useEffect(() => {
         console.log(type);
-        (type == "collectionAdd" || type == "contractAdd") ?
+        (type === "collectionAdd" || type === "contractAdd") ?
             setNetOp(true) : setNetOp(false)
 
     }, [type]);
