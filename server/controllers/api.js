@@ -57,25 +57,48 @@ router.get('/balance/wallet/:address', async (req, res) => {
     const fetchTokenNetwork = async (net, config, address) => {
         const alchemy = new Alchemy(config);
         try {
-            const balance = await alchemy.core.getTokensForOwner(address);
-            console.log(`completed ${net}`)
-            return { [net]: balance };
-        } catch (err) {
-            console.error(`Failed to fetch Balance for ${net} network`)
-            return { [net]: { error: `Failed to fetch Balance for ${net} network`, details: err.message } }
-        };
-    };
 
+            const balances = await alchemy.core.getTokensForOwner(address)
+
+            // console.log(balances)
+            // Remove tokens with zero balance, loop thru to get meta data and render it human-readable
+            //(https://docs.alchemy.com/docs/how-to-get-all-tokens-owned-by-an-address)
+            const nonZeroBalances = balances.tokens.filter((token) => {
+                const isNonZero = BigInt(token.rawBalance) > 0n;
+
+                if (!isNonZero) {
+                    console.log("Filtered out zero balance:", token.name);
+                }
+                console.log("has balance", token.name);
+                return isNonZero
+            });
+            console.log(nonZeroBalances)
+            let res = nonZeroBalances.map(token => {
+                // Convert balance to a human-readable format considering the token's decimals
+                let balance = Number(token.rawBalance) / Math.pow(10, token.decimals);
+                balance = balance.toFixed(3); // Keep two decimal places
+                return `${token.name}: ${balance} ${token.symbol}`;
+            });
+
+            return {
+                [net]: res
+            }
+        } catch (err) {
+            console.error(`Failed to fetch Balance for ${net} network`);
+            return { [net]: { error: `Failed to fetch Balance for ${net} network`, details: err.message } };
+        }
+    };
     try {
         const results = await Promise.all(
-            //await result from each network
+            //await results from fetch per network
             Object.entries(configs).map(([net, config]) =>
                 fetchTokenNetwork(net, config, address)
             )
-        )
+        );
         // Combine the results into a single array
         const combinedResults = results.reduce((net, result) => ({ ...net, ...result }), {});
-        res.json([combinedResults]);
+        console.log(combinedResults)
+        res.json(combinedResults);
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
@@ -168,13 +191,16 @@ router.get('/nft/wallet/:address', async (req, res) => {
     //     };
     // };
 
+    //spam filter 
+    // { excludeFilters: [NftFilters.SPAM] }
+
     const fetchNFTperNetwork = async (net, config, address) => {
         const alchemy = new Alchemy(config);
         console.log(config);
         try {
             const nfts = await alchemy.nft.getNftsForOwner(address);
             console.log(`completed ${net}, totalCount: ${nfts.totalCount}`);
-            console.log(`${net}, pageKey: ${nfts.pageKey}`)
+            // console.log(`${net}, pageKey: ${nfts.pageKey}`)
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
             return {
                 [net]: {
