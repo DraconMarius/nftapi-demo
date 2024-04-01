@@ -35,7 +35,7 @@ function Search() {
     //storing pgKey response
     const [pgKey, setPgKey] = useState([]);
 
-    const fetchServer = async () => {
+    const fetchServer = async (searchParams) => {
         setLoading(true)
         let data
         try {

@@ -29,7 +29,7 @@ function Nav() {
     // console.log(apikey)
     const [type, setType] = useState('walletAdd')
     const [string, setString] = useState('')
-    const [net, setNet] = useState('')
+    const [net, setNet] = useState('Eth')
     const [NetOp, setNetOp] = useState(false)
     const { searchParams, setSearchParams, resetSearchParams } = useSearch();
 

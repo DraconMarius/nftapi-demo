@@ -256,7 +256,7 @@ router.get('/nft/collection/:net', async (req, res) => {
         //     `contractAddress=${input.contractAdd}` :
         //     `collectionSlug=${input.slug}`;
 
-        let finalInput = `contractAdd=${input.contractAdd}`;
+        let finalInput = `contractAddress=${input.contractAdd}`;
 
         //sdk doesn't support slug name? using axios to fetch the collection endpoint which support slug names
         const options = {
@@ -271,9 +271,9 @@ router.get('/nft/collection/:net', async (req, res) => {
             const nfts = await axios.request(options);
             console.log(`completed ${net}`)
             console.log(`total item in Collection - ${finalInput}, ${nfts.data.nfts.length}`)
-            return { ...nfts.data }
+            return { [net]: nfts.data }
         } catch (err) {
-            console.error(`Failed to fetch NFT for ${finalInput} for ${net} network`)
+            console.error(`Failed to fetch NFT for ${finalInput} for ${net} network`, err)
             return { error: `Failed to fetch NFT for ${net} network`, details: err.message }
         };
     };
