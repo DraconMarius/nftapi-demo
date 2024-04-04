@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
     Pane
@@ -10,21 +10,19 @@ import Wallet from '../comp/Wallet';
 
 function Display({ apiRes, type }) {
     // conditionally render based on type
-    // console.log(apiRes)
+
     return (
 
         <>
             {apiRes ?
-
                 <Pane>
                     {(type === "wallet") ?
-                        <Wallet apiRes={apiRes} /> :
+                        <Wallet apiRes={apiRes} type={type} /> :
                         (type === "collection") ?
-                            <Collections apiRes={apiRes} /> :
-
+                            <Collections apiRes={apiRes} type={type} /> :
                             (type === "NFT") ?
-                                <NFT apiRes={apiRes} /> :
-                                <>Loading...</>
+                                <NFT apiRes={apiRes} type={type} /> :
+                                <>LOADING...</>
                     }
                 </Pane> : <>loading</>
             }

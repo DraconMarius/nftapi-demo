@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Alchemy } = require('alchemy-sdk');
+const { Alchemy, NftFilters } = require('alchemy-sdk');
 const axios = require('axios')
 
 const Key = process.env.ALCHEMY_API_KEY
@@ -119,17 +119,22 @@ router.get('/nft/wallet/:net/:address/page', async (req, res) => {
 
         const alchemy = new Alchemy(config);
         let options = {
-            pageKey: pgKey
+            pageKey: pgKey,
+            excludeFilters: [NftFilters.SPAM],
+            pageSize: 50
         }
 
         try {
-            const nfts = await alchemy.nft.getNftsForOwner(address, config, options)
+            const nfts = await alchemy.nft.getNftsForOwner(address, options)
             console.log(`completed ${net}, totalCount: ${nfts.totalCount}`);
+            const okNfts = nfts.ownedNfts.filter(nft => {
+                return nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
+            });
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
             return {
                 [net]: {
-                    nfts,
-                    "pageKey": nfts.pageKey
+                    okNfts,
+                    "pageKey": okNfts.pageKey
                 }
             };
         } catch (err) {
@@ -197,14 +202,21 @@ router.get('/nft/wallet/:address', async (req, res) => {
     const fetchNFTperNetwork = async (net, config, address) => {
         const alchemy = new Alchemy(config);
         console.log(config);
+        let options = {
+            excludeFilters: [NftFilters.SPAM],
+            pageSize: 50
+        }
         try {
-            const nfts = await alchemy.nft.getNftsForOwner(address);
+            const nfts = await alchemy.nft.getNftsForOwner(address, options);
             console.log(`completed ${net}, totalCount: ${nfts.totalCount}`);
             // console.log(`${net}, pageKey: ${nfts.pageKey}`)
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
+            const okNfts = nfts.ownedNfts.filter(nft => {
+                return nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
+            });
             return {
                 [net]: {
-                    nfts,
+                    okNfts,
                     "totalCount": nfts.totalCount,
                     "pageKey": nfts.pageKey
                 }
@@ -269,9 +281,18 @@ router.get('/nft/collection/:net', async (req, res) => {
         try {
             console.log('url', options.url)
             const nfts = await axios.request(options);
+            console.log(nfts)
             console.log(`completed ${net}`)
-            console.log(`total item in Collection - ${finalInput}, ${nfts.data.nfts.length}`)
-            return { [net]: nfts.data }
+            console.log(`got item in Collection - ${finalInput}, ${nfts.data.nfts.length}`)
+            const okNfts = nfts.data.nfts.filter(nft => {
+                return (nft.image && typeof nft.image.originalUrl) === 'string' && nft.image.originalUrl.startsWith('http');
+            });
+            return {
+                [net]: {
+                    okNfts,
+                    pgKey: nfts.data.pageKey
+                }
+            }
         } catch (err) {
             console.error(`Failed to fetch NFT for ${finalInput} for ${net} network`, err)
             return { error: `Failed to fetch NFT for ${net} network`, details: err.message }

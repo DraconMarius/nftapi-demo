@@ -26,6 +26,10 @@ import {
     IconButton
 } from 'evergreen-ui';
 
+import Collections from '../comp/Collections';
+import NFT from '../comp/NFT';
+import Wallet from '../comp/Wallet';
+
 function Search() {
     const { searchParams } = useSearch()
     const [apiRes, setApiRes] = useState({});
@@ -36,8 +40,9 @@ function Search() {
     const [pgKey, setPgKey] = useState([]);
 
     const fetchServer = async (searchParams) => {
-        setLoading(true)
+
         let data
+
         try {
             if (searchParams.walletAdd) {
                 data = await getNFTsForOwner(searchParams.walletAdd);
@@ -52,7 +57,7 @@ function Search() {
             } else {
                 setType('default')
             }
-            setLoading(false);
+
             return data
         } catch (error) {
             console.error("Error fetching data:", error)
@@ -67,17 +72,19 @@ function Search() {
         //fetch everytime search provider param is changed
         //change based on searchParams availability
         const fetchData = async () => {
+            setLoading(true)
             const data = await fetchServer(searchParams);
             setApiRes(data); // Set the resolved data
+            setLoading(false);
         };
 
         // Call the async function
         fetchData();
     }, [searchParams]);
 
-    // useEffect(() => {
-    //     console.log(apiRes)
-    // }, [apiRes])
+    useEffect(() => {
+        console.log(apiRes)
+    }, [apiRes])
 
 
 
@@ -88,9 +95,10 @@ function Search() {
                     <Spinner marginX="auto" marginY={120} />
                 </Overlay>
             </Pane >
-            {(type === "default") ?
-                <Pane>DEFAULT</Pane> :
-                <Display apiRes={apiRes} type={type} />
+            {((type === "default") && (loading === false)) ?
+                <Pane>DEFAULT</Pane> : (loading === true) ?
+                    <>l-o-a-d-i-n-g</> : (type && (loading === false)) ?
+                        < Display apiRes={apiRes} type={type} /> : <Pane>Error</Pane>
             }
         </>
     );

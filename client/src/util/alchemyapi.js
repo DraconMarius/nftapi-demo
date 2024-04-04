@@ -46,7 +46,7 @@ export const getNFTsPage = async (net, address, pgKey) => {
 export const getNFTsCollection = async (net, address) => {
     try {
         const response = await fetch(`/api/nft/collection/${net}?contractAdd=${address}`)
-
+        if (!response.ok) throw new Error('collection fetch error');
         const data = await response.json();
 
         return data;

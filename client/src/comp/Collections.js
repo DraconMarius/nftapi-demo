@@ -3,13 +3,13 @@ import React from 'react';
 import Tabs from './Tabs'
 
 
-function Collections({ apiRes }) {
+function Collections({ apiRes, type }) {
 
 
 
     return (
         <>
-            <Tabs apiRes={apiRes} />
+            <Tabs apiRes={apiRes} type={type} />
         </>
     )
 }

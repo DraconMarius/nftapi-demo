@@ -42,6 +42,7 @@ function Nav() {
     }
 
     const handleChangeWithNet = (type, string, net) => {
+
         resetSearchParams()
         setSearchParams(type, string);
         setSearchParams("network", net);
@@ -52,11 +53,18 @@ function Nav() {
         console.log(searchParams);
     }, [searchParams]);
 
+    // useEffect(() => {
+    //     console.log(net);
+    //     setSearchParams("network", net)
+    // }, [net])
 
     useEffect(() => {
         console.log(type);
-        (type === "collectionAdd" || type === "contractAdd") ?
-            setNetOp(true) : setNetOp(false)
+        (type === "collectionAdd" || type === "contractAdd") ? (
+            setNet('Eth'),
+            setNetOp(true)
+        )
+            : (setNetOp(false), setNet(''))
 
     }, [type]);
 
