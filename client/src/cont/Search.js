@@ -27,9 +27,8 @@ import {
     IconButton
 } from 'evergreen-ui';
 
-import Collections from '../comp/Collections';
-import NFT from '../comp/NFT';
-import Wallet from '../comp/Wallet';
+import Typewriter from 'typewriter-effect';
+
 
 function Search() {
     const { searchParams } = useSearch()
@@ -85,10 +84,24 @@ function Search() {
 
         // Call the async function
         fetchData();
+
+
     }, [searchParams]);
 
     useEffect(() => {
         console.log(apiRes)
+        if (searchParams.walletAdd) {
+            setType('wallet')
+
+        } else if (searchParams.collectionAdd) {
+            setType('collection')
+
+        } else if (searchParams.tokenId) {
+            setType('NFT')
+        } else {
+            setType('default')
+        }
+
     }, [apiRes])
 
 
@@ -101,7 +114,28 @@ function Search() {
                 </Overlay>
             </Pane >
             {((type === "default") && (loading === false)) ?
-                <Pane>DEFAULT</Pane> : (loading === true) ?
+                <Pane display="flex"
+                    justifyContent="center" alignItems="center">
+                    <Pane display="flex" justifyContent="center" alignItems="center">
+                        <Typewriter
+                            onInit={(typewriter) => {
+                                typewriter.typeString('You can see all NFT owned by a wallet address')
+                                    .pauseFor(800)
+                                    .deleteChars(37)
+                                    .pauseFor(1600)
+                                    .typeString('checkout a specific Collection')
+                                    .pauseFor(2400)
+                                    .deleteChars(21)
+                                    .pauseFor(2400)
+                                    .typeString('an individual NFT')
+                                    .pauseFor(2400)
+                                    .deleteAll()
+                                    .start()
+                            }}
+                        />
+                    </Pane>
+                </Pane>
+                : (loading === true) ?
                     <>l-o-a-d-i-n-g</> : (type && (loading === false)) ?
                         < Display apiRes={apiRes} type={type} /> : <Pane>Error</Pane>
             }

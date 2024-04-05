@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
-    Pane
+    Pane,
+    Alert
 } from 'evergreen-ui';
 
-import Collections from '../comp/Collections';
+import Collections from './Collections';
 import NFT from '../comp/NFT';
-import Wallet from '../comp/Wallet';
+import Wallet from './Wallet';
 
 function Display({ apiRes, type }) {
-    // conditionally render based on type
+    const { displayType, setDisplay } = useState('default')
 
+    useEffect(() => {
+        if (apiRes === undefined) {
+            type = 'error'
+        }
+    }, [apiRes])
     return (
 
         <>
@@ -22,9 +28,15 @@ function Display({ apiRes, type }) {
                             <Collections apiRes={apiRes} type={type} /> :
                             (type === "NFT") ?
                                 <NFT apiRes={apiRes} type={type} /> :
-                                <>LOADING...</>
+                                (type === "error") ?
+                                    <Alert intent="danger"
+                                        title="Error Display Data"
+                                    >
+                                        Error fetching data
+                                    </Alert> :
+                                    <>LOADING...</>
                     }
-                </Pane> : <>loading</>
+                </Pane> : <></>
             }
         </>
     )
