@@ -29,8 +29,10 @@ function Nav() {
     // console.log(apikey)
     const [type, setType] = useState('walletAdd')
     const [string, setString] = useState('')
-    const [net, setNet] = useState('')
+    const [net, setNet] = useState('Eth')
     const [NetOp, setNetOp] = useState(false)
+    const [id, setId] = useState('')
+    const [idOp, setIdOp] = useState(false)
     const { searchParams, setSearchParams, resetSearchParams } = useSearch();
 
 
@@ -42,9 +44,18 @@ function Nav() {
     }
 
     const handleChangeWithNet = (type, string, net) => {
+
         resetSearchParams()
         setSearchParams(type, string);
         setSearchParams("network", net);
+    }
+
+    const handleChangeWithId = (type, string, net, id) => {
+
+        resetSearchParams()
+        setSearchParams(type, string);
+        setSearchParams("network", net);
+        setSearchParams("tokenId", id);
     }
 
 
@@ -52,12 +63,26 @@ function Nav() {
         console.log(searchParams);
     }, [searchParams]);
 
+    // useEffect(() => {
+    //     console.log(net);
+    //     setSearchParams("network", net)
+    // }, [net])
 
     useEffect(() => {
         console.log(type);
-        (type === "collectionAdd" || type === "contractAdd") ?
-            setNetOp(true) : setNetOp(false)
-
+        if (type === "collectionAdd" || type === "contractAdd") {
+            setNet('Eth');
+            setNetOp(true);
+            setIdOp(false)
+            if (type === "contractAdd") {
+                setIdOp(true);
+            }
+        } else {
+            setNetOp(false);
+            setIdOp(false); // Assuming you want to reset this in the else case
+            setNet('');
+            setId('');
+        }
     }, [type]);
 
 
@@ -88,8 +113,16 @@ function Nav() {
                             <option value="Optimism">Optimism</option>
                         </Select>) : <></>}
 
-                        <Pane display='flex' alignItems='center' justifyContent="center">
+                        {idOp ? (
+                            <Pane display='flex' alignItems='center' justifyContent="center">
 
+                                <TextInput
+                                    placeholder="tokeId"
+                                    onChange={e => setId(e.target.value)}
+                                />
+                            </Pane>) : <></>}
+
+                        <Pane display='flex' alignItems='center' justifyContent="center">
                             <TextInput
                                 placeholder="Search..."
                                 onChange={e => setString(e.target.value)}
@@ -100,6 +133,14 @@ function Nav() {
                         <Link to="/search" >
                             <Button
                                 onClick={() => handleChange(type, string)}
+                                color="inherit">
+                                <SearchIcon />
+                            </Button>
+                        </Link>
+                    ) : idOp ? (
+                        <Link to="/search" >
+                            <Button
+                                onClick={() => handleChangeWithId(type, string, net, id)}
                                 color="inherit">
                                 <SearchIcon />
                             </Button>

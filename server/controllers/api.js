@@ -1,14 +1,16 @@
 const router = require("express").Router();
-const { Alchemy } = require('alchemy-sdk');
+const { Alchemy, Network, NftFilters } = require('alchemy-sdk');
 const axios = require('axios')
 
 const Key = process.env.ALCHEMY_API_KEY
 
 // Configuration settings for each network
+//**Polygon's setting using Network is listed as POLYGONZKEVM_MAINNET
+//using it causes an error saying that is not a valid network hence the hard code
 const configs = {
     Eth: {
         apiKey: Key,
-        network: 'eth-mainnet',
+        network: Network.ETH_MAINNET
     },
     Polygon: {
         apiKey: Key,
@@ -16,37 +18,46 @@ const configs = {
     },
     Arbitrum: {
         apiKey: Key,
-        network: "arb-mainnet"
+        network: Network.ARB_MAINNET
     },
     Optimism: {
         apiKey: Key,
-        network: "opt-mainnet"
+        network: Network.OPT_MAINNET
     }
 };
 
 
-// // testing
-// router.get('/testing/:address', async (req, res) => {
-//     console.log('===test===')
-//     const address = req.params.address;
+// api/nft/0xe785E82358879F061BC3dcAC6f0444462D4b5330
+router.get('/nft/:net/:id/:address', async (req, res) => {
+    console.log('==============/NFT==============')
+    const net = req.params.net
+    const tokenId = req.params.id
+    const address = req.params.address;
+    // console.log(net)
 
-//     const config = {
-//         apiKey: process.env.ALCHEMY_API_KEY,
-//         network: 'eth-mainnet'
-//     }
+    const config = configs[net]
 
-//     const alchemy = new Alchemy(config)
+    const alchemy = new Alchemy(config)
 
-//     let options = {
-//         omitMetadata: true
-//     }
+    try {
+        const nft = await alchemy.nft.getNftMetadata(address, tokenId)
 
-//     for await (const nft of alchemy.nft.getNftsForOwnerIterator(address)) {
-//         console.log('ownedNft:', nft);
-//     }
-// })
+        console.log(`Retrieved: ${nft.contract.name}`)
+        const finalRes = {
+            [net]: {
+                nft
+            }
+        }
 
-// //testing
+        res.json(finalRes);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    };
+
+})
+
+//testing
 
 
 // api/balance/wallet/0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE
@@ -57,25 +68,48 @@ router.get('/balance/wallet/:address', async (req, res) => {
     const fetchTokenNetwork = async (net, config, address) => {
         const alchemy = new Alchemy(config);
         try {
-            const balance = await alchemy.core.getTokensForOwner(address);
-            console.log(`completed ${net}`)
-            return { [net]: balance };
-        } catch (err) {
-            console.error(`Failed to fetch Balance for ${net} network`)
-            return { [net]: { error: `Failed to fetch Balance for ${net} network`, details: err.message } }
-        };
-    };
 
+            const balances = await alchemy.core.getTokensForOwner(address)
+
+            // console.log(balances)
+            // Remove tokens with zero balance, loop thru to get meta data and render it human-readable
+            //(https://docs.alchemy.com/docs/how-to-get-all-tokens-owned-by-an-address)
+            const nonZeroBalances = balances.tokens.filter((token) => {
+                const isNonZero = BigInt(token.rawBalance) > 0n;
+
+                if (!isNonZero) {
+                    console.log("Filtered out zero balance:", token.name);
+                }
+                console.log("has balance", token.name);
+                return isNonZero
+            });
+            console.log(nonZeroBalances)
+            let res = nonZeroBalances.map(token => {
+                // Convert balance to a human-readable format considering the token's decimals
+                let balance = Number(token.rawBalance) / Math.pow(10, token.decimals);
+                balance = balance.toFixed(3); // Keep two decimal places
+                return `${token.name}: ${balance} ${token.symbol}`;
+            });
+
+            return {
+                [net]: res
+            }
+        } catch (err) {
+            console.error(`Failed to fetch Balance for ${net} network`);
+            return { [net]: { error: `Failed to fetch Balance for ${net} network`, details: err.message } };
+        }
+    };
     try {
         const results = await Promise.all(
-            //await result from each network
+            //await results from fetch per network
             Object.entries(configs).map(([net, config]) =>
                 fetchTokenNetwork(net, config, address)
             )
-        )
+        );
         // Combine the results into a single array
         const combinedResults = results.reduce((net, result) => ({ ...net, ...result }), {});
-        res.json([combinedResults]);
+        console.log(combinedResults)
+        res.json(combinedResults);
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
@@ -96,17 +130,22 @@ router.get('/nft/wallet/:net/:address/page', async (req, res) => {
 
         const alchemy = new Alchemy(config);
         let options = {
-            pageKey: pgKey
+            pageKey: pgKey,
+            excludeFilters: [NftFilters.SPAM],
+            pageSize: 50
         }
 
         try {
-            const nfts = await alchemy.nft.getNftsForOwner(address, config, options)
+            const nfts = await alchemy.nft.getNftsForOwner(address, options)
             console.log(`completed ${net}, totalCount: ${nfts.totalCount}`);
+            const okNfts = nfts.ownedNfts.filter(nft => {
+                return nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
+            });
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
             return {
                 [net]: {
-                    nfts,
-                    "pageKey": nfts.pageKey
+                    okNfts,
+                    "pageKey": okNfts.pageKey
                 }
             };
         } catch (err) {
@@ -168,17 +207,27 @@ router.get('/nft/wallet/:address', async (req, res) => {
     //     };
     // };
 
+    //spam filter 
+    // { excludeFilters: [NftFilters.SPAM] }
+
     const fetchNFTperNetwork = async (net, config, address) => {
         const alchemy = new Alchemy(config);
-        console.log(config);
+        // console.log(config);
+        let options = {
+            excludeFilters: [NftFilters.SPAM],
+            pageSize: 50
+        }
         try {
-            const nfts = await alchemy.nft.getNftsForOwner(address);
+            const nfts = await alchemy.nft.getNftsForOwner(address, options);
             console.log(`completed ${net}, totalCount: ${nfts.totalCount}`);
-            console.log(`${net}, pageKey: ${nfts.pageKey}`)
+            // console.log(`${net}, pageKey: ${nfts.pageKey}`)
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
+            const okNfts = nfts.ownedNfts.filter(nft => {
+                return nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
+            });
             return {
                 [net]: {
-                    nfts,
+                    okNfts,
                     "totalCount": nfts.totalCount,
                     "pageKey": nfts.pageKey
                 }
@@ -230,7 +279,7 @@ router.get('/nft/collection/:net', async (req, res) => {
         //     `contractAddress=${input.contractAdd}` :
         //     `collectionSlug=${input.slug}`;
 
-        let finalInput = `contractAdd=${input.contractAdd}`;
+        let finalInput = `contractAddress=${input.contractAdd}`;
 
         //sdk doesn't support slug name? using axios to fetch the collection endpoint which support slug names
         const options = {
@@ -243,11 +292,20 @@ router.get('/nft/collection/:net', async (req, res) => {
         try {
             console.log('url', options.url)
             const nfts = await axios.request(options);
+            console.log(nfts)
             console.log(`completed ${net}`)
-            console.log(`total item in Collection - ${finalInput}, ${nfts.data.nfts.length}`)
-            return { ...nfts.data }
+            console.log(`got item in Collection - ${finalInput}, ${nfts.data.nfts.length}`)
+            const okNfts = nfts.data.nfts.filter(nft => {
+                return (nft.image && typeof nft.image.originalUrl) === 'string' && nft.image.originalUrl.startsWith('http');
+            });
+            return {
+                [net]: {
+                    okNfts,
+                    pgKey: nfts.data.pageKey
+                }
+            }
         } catch (err) {
-            console.error(`Failed to fetch NFT for ${finalInput} for ${net} network`)
+            console.error(`Failed to fetch NFT for ${finalInput} for ${net} network`, err)
             return { error: `Failed to fetch NFT for ${net} network`, details: err.message }
         };
     };
