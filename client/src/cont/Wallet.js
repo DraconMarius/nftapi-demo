@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Tabs from './Tabs'
+import Tabs from '../comp/Tabs'
 
 
-function Collections({ apiRes, type }) {
+function Wallet({ apiRes, type }) {
 
 
 
@@ -14,4 +14,4 @@ function Collections({ apiRes, type }) {
     )
 }
 
-export default Collections;
+export default Wallet;

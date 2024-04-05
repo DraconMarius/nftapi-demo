@@ -9,7 +9,7 @@ import {
 import Grid from './Grid';
 
 function Tabs({ apiRes, type }) {
-    // console.log(apiRes)
+    console.log(apiRes)
 
 
     //conditionally render chunk based on the response from server

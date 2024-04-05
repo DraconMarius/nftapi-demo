@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import '../assets/Grid.css'
-import { Card, Paragraph, Tooltip, Strong } from 'evergreen-ui';
-import { useSearch } from '../cont/searchContex'
+import {
+    Card, Tooltip,
+} from 'evergreen-ui';
+import { useSearch } from '../cont/searchContex';
+
 
 function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
     const { setSearchParams, resetSearchParams } = useSearch();
@@ -22,10 +24,11 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
 
 
     return (
+        <Tooltip content={name}>
 
 
             <Card
-                elevation={1}
+                elevation={2}
                 width={200}
                 height={200}
                 margin={12}
@@ -43,20 +46,6 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
                     alt={name}
                     style={{ width: '100%', height: 'auto' }}
                     onError={handleImageError} />
-                <Paragraph
-                    size={300}
-                    position="absolute"
-                    bottom={0}
-                    width="100%"
-                    textAlign="center"
-                    background="rgba(0, 0, 0, 0.7)"
-                    color="white"
-                    paddingY={8}
-                    style={{ display: 'none', transition: '0.3s' }}
-                    className="card-text"
-                >
-                    {name}
-                </Paragraph>
             </Card>
         </Tooltip>
     );

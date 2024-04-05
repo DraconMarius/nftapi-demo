@@ -1,4 +1,0 @@
-/* shows title when hovered */
-.card:hover .card-text {
-    opacity: 1;
-}

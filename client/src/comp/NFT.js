@@ -9,7 +9,8 @@ import {
     Strong,
     Table,
     CircleArrowRightIcon,
-    CircleArrowLeftIcon
+    CircleArrowLeftIcon,
+    Button
 } from 'evergreen-ui';
 
 function Nft({ apiRes }) {
@@ -76,7 +77,7 @@ function Nft({ apiRes }) {
             width="100%"
             alignItems="center"
             justifyContent="center"
-            background={`url('${apiRes[network].nft.collection.bannerImageUrl}')`}
+            background={`url('${apiRes[network]?.nft?.collection?.bannerImageUrl || apiRes[network].nft.image.cachedUrl}')`}
             backgroundPosition="center"
             position="relative" >
             <div style={overlayStyle} /> {/* Overlay */}
@@ -98,7 +99,7 @@ function Nft({ apiRes }) {
                     <Heading size={800}>
                         {apiRes[network].nft.name}
                     </Heading>
-                    <Paragraph> -  {apiRes[network].nft.collection.name}</Paragraph>
+                    <Paragraph> -  {apiRes[network]?.nft?.collection?.name || apiRes[network]?.nft?.name}</Paragraph>
                 </Pane>
 
                 <Image
@@ -106,6 +107,7 @@ function Nft({ apiRes }) {
                     alt={apiRes[network].nft.name}
                     marginTop={16}
                     width="50%"
+                    elevation="4"
                 />
                 <Pane width="100%" marginTop="16">
                     <Pane style={titleStyle}>
@@ -115,13 +117,23 @@ function Nft({ apiRes }) {
                         <Table.Body >
                             <Table.Row style={tableStyle} onClick={() => handleCollection(apiRes[network].nft.contract.address, network)}>
                                 <Table.TextCell>Contract Address</Table.TextCell>
-                                <Table.TextCell isSelectable>{apiRes[network].nft.contract.address}</Table.TextCell>
+                                <Table.TextCell isSelectable>
+                                    <Button backgroundColor="rgba(249, 250, 252, 0.9)">
+                                        {apiRes[network].nft.contract.address}
+                                    </Button>
+                                </Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle} display="flex" alignContent="center">
                                 <Table.TextCell>Token ID</Table.TextCell>
-                                <Table.TextCell><CircleArrowLeftIcon onClick={() => handlePrev(apiRes[network].nft.contract.address, network, apiRes[network].nft.tokenId)} />
+                                <Table.TextCell>
+                                    <Button appearance="minimal">
+                                        <CircleArrowLeftIcon onClick={() => handlePrev(apiRes[network].nft.contract.address, network, apiRes[network].nft.tokenId)} />
+                                    </Button>
                                     <Strong>{apiRes[network].nft.tokenId}</Strong>
-                                    <CircleArrowRightIcon onClick={() => handleNext(apiRes[network].nft.contract.address, network, apiRes[network].nft.tokenId)} /></Table.TextCell>
+                                    <Button appearance="minimal">
+                                        <CircleArrowRightIcon onClick={() => handleNext(apiRes[network].nft.contract.address, network, apiRes[network].nft.tokenId)} />
+                                    </Button>
+                                </Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle}>
                                 <Table.TextCell>Token Type</Table.TextCell>
@@ -142,8 +154,8 @@ function Nft({ apiRes }) {
                         </Table.Body>
                     </Table>
                 </Pane>
-            </Card>
-        </Pane>
+            </Card >
+        </Pane >
     );
 }
 
