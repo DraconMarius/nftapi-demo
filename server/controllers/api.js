@@ -1,14 +1,16 @@
 const router = require("express").Router();
-const { Alchemy, NftFilters } = require('alchemy-sdk');
+const { Alchemy, Network, NftFilters } = require('alchemy-sdk');
 const axios = require('axios')
 
 const Key = process.env.ALCHEMY_API_KEY
 
 // Configuration settings for each network
+//**Polygon's setting using Network is listed as POLYGONZKEVM_MAINNET
+//using it causes an error saying that is not a valid network hence the hard code
 const configs = {
     Eth: {
         apiKey: Key,
-        network: 'eth-mainnet',
+        network: Network.ETH_MAINNET
     },
     Polygon: {
         apiKey: Key,
@@ -16,37 +18,46 @@ const configs = {
     },
     Arbitrum: {
         apiKey: Key,
-        network: "arb-mainnet"
+        network: Network.ARB_MAINNET
     },
     Optimism: {
         apiKey: Key,
-        network: "opt-mainnet"
+        network: Network.OPT_MAINNET
     }
 };
 
 
-// // testing
-// router.get('/testing/:address', async (req, res) => {
-//     console.log('===test===')
-//     const address = req.params.address;
+// api/nft/0xe785E82358879F061BC3dcAC6f0444462D4b5330
+router.get('/nft/:net/:id/:address', async (req, res) => {
+    console.log('==============/NFT==============')
+    const net = req.params.net
+    const tokenId = req.params.id
+    const address = req.params.address;
+    // console.log(net)
 
-//     const config = {
-//         apiKey: process.env.ALCHEMY_API_KEY,
-//         network: 'eth-mainnet'
-//     }
+    const config = configs[net]
 
-//     const alchemy = new Alchemy(config)
+    const alchemy = new Alchemy(config)
 
-//     let options = {
-//         omitMetadata: true
-//     }
+    try {
+        const nft = await alchemy.nft.getNftMetadata(address, tokenId)
 
-//     for await (const nft of alchemy.nft.getNftsForOwnerIterator(address)) {
-//         console.log('ownedNft:', nft);
-//     }
-// })
+        console.log(`Retrieved: ${nft.contract.name}`)
+        const finalRes = {
+            [net]: {
+                nft
+            }
+        }
 
-// //testing
+        res.json(finalRes);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    };
+
+})
+
+//testing
 
 
 // api/balance/wallet/0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE
@@ -201,7 +212,7 @@ router.get('/nft/wallet/:address', async (req, res) => {
 
     const fetchNFTperNetwork = async (net, config, address) => {
         const alchemy = new Alchemy(config);
-        console.log(config);
+        // console.log(config);
         let options = {
             excludeFilters: [NftFilters.SPAM],
             pageSize: 50

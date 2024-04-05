@@ -4,7 +4,8 @@ const blankState = {
     network: '',
     walletAdd: '',
     collectionAdd: '',
-    contractAdd: ''
+    contractAdd: '',
+    tokenId: ''
 }
 
 const SearchContext = createContext({
@@ -12,8 +13,8 @@ const SearchContext = createContext({
         network: '',
         walletAdd: '',
         collectionAdd: '',
-        contractAdd: ''
-
+        contractAdd: '',
+        tokenId: ''
     },
     setParams: () => { }
 });
@@ -24,7 +25,8 @@ export function SearchProvider({ children }) {
         network: '',
         walletAdd: '',
         collectionAdd: '',
-        contractAdd: ''
+        contractAdd: '',
+        tokenId: ''
     });
 
     const updateSearchParams = (field, value) => {

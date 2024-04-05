@@ -9,7 +9,8 @@ import {
     getNFTsForOwner,
     getNFTsCollection,
     getNFTsPage,
-    getTokenBalance
+    getTokenBalance,
+    getNFT
 } from '../util/alchemyapi';
 
 import {
@@ -54,6 +55,10 @@ function Search() {
                     searchParams.collectionAdd)
                 setType('collection')
 
+            } else if (searchParams.tokenId) {
+                data = await getNFT(searchParams.network,
+                    searchParams.tokenId, searchParams.contractAdd)
+                setType('NFT')
             } else {
                 setType('default')
             }
