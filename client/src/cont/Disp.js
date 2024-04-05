@@ -32,11 +32,15 @@ function Display({ apiRes, type }) {
                                     <Alert intent="danger"
                                         title="Error Display Data"
                                     >
-                                        Error fetching data
+                                        Error displaying data
                                     </Alert> :
                                     <>LOADING...</>
                     }
-                </Pane> : <></>
+                </Pane> : <>  <Alert intent="danger"
+                    title="Error Display Data"
+                >
+                    Error fetching data from server, NFT data undefined
+                </Alert> </>
             }
         </>
     )
