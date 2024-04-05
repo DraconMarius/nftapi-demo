@@ -88,7 +88,18 @@ function Search() {
     }, [searchParams]);
 
     useEffect(() => {
-        console.log(apiRes)
+        if (searchParams.walletAdd) {
+            setType('wallet')
+
+        } else if (searchParams.collectionAdd) {
+            setType('collection')
+
+        } else if (searchParams.tokenId) {
+            setType('NFT')
+        } else {
+            setType('default')
+        }
+
     }, [apiRes])
 
 

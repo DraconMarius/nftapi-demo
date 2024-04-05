@@ -11,15 +11,13 @@ import Grid from './Grid';
 function Tabs({ apiRes, type }) {
     // console.log(apiRes)
 
+
     //conditionally render chunk based on the response from server
     const [displayType, setType] = useState("wallet")
     useEffect(() => {
         // console.log(apiRes.Eth.totalCount)
-        // !apiRes.Eth.totalCount ? setType("collection") : setType("wallet")
         console.log(type)
         setType(type)
-        const net = "Eth"
-        // console.log(apiRes[net].length)
     }, [apiRes, type])
 
     // useEffect(() => {
@@ -74,7 +72,10 @@ function Tabs({ apiRes, type }) {
                                                 key={itemIndex}
                                                 imageUrl={item.image.cachedUrl}
                                                 fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
-                                                name={item.title || item.raw.metadata.name} />
+                                                name={item.title || item.raw.metadata.name}
+                                                contractAdd={item.contract.address}
+                                                id={item.tokenId}
+                                                net={network} />
 
                                         )
                                     })}
@@ -119,7 +120,10 @@ function Tabs({ apiRes, type }) {
                                                 key={itemIndex}
                                                 imageUrl={item.image.cachedUrl || item.image.pngUrl}
                                                 fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
-                                                name={item.name || item.raw.metadata} />
+                                                name={item.name || item.raw.metadata.name}
+                                                contractAdd={item.contract.address}
+                                                id={item.tokenId}
+                                                net={network} />
 
                                         ))}
                                     </Pane>

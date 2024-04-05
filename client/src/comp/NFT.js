@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { useSearch } from '../cont/searchContex'
 import {
     Pane,
     Card,
@@ -7,7 +7,9 @@ import {
     Image,
     Paragraph,
     Strong,
-    Table
+    Table,
+    CircleArrowRightIcon,
+    CircleArrowLeftIcon
 } from 'evergreen-ui';
 
 function Nft({ apiRes }) {
@@ -15,6 +17,34 @@ function Nft({ apiRes }) {
     const network = Object.keys(apiRes)[0];
     console.log(network)
 
+    const { setSearchParams, resetSearchParams } = useSearch();
+    const handleCollection = (collectionAdd, net) => {
+        resetSearchParams();
+        setSearchParams("network", net);
+        setSearchParams("collectionAdd", collectionAdd)
+    };
+
+    const handleNext = (contractAdd, net, id) => {
+        parseInt(id)
+        console.log(id)
+        const nextId = id++
+        console.log(nextId)
+        resetSearchParams();
+        setSearchParams("network", net);
+        setSearchParams("contractAdd", contractAdd)
+        setSearchParams("tokenId", id)
+    };
+
+    const handlePrev = (contractAdd, net, id) => {
+        parseInt(id)
+        console.log(id)
+        const nextId = id--
+        console.log(nextId)
+        resetSearchParams();
+        setSearchParams("network", net);
+        setSearchParams("contractAdd", contractAdd)
+        setSearchParams("tokenId", id)
+    };
 
     const overlayStyle = {
         position: 'absolute',
@@ -83,28 +113,30 @@ function Nft({ apiRes }) {
                     </Pane>
                     <Table >
                         <Table.Body >
-                            <Table.Row style={tableStyle}>
+                            <Table.Row style={tableStyle} onClick={() => handleCollection(apiRes[network].nft.contract.address, network)}>
                                 <Table.TextCell>Contract Address</Table.TextCell>
                                 <Table.TextCell isSelectable>{apiRes[network].nft.contract.address}</Table.TextCell>
                             </Table.Row>
-                            <Table.Row style={tableStyle} >
+                            <Table.Row style={tableStyle} display="flex" alignContent="center">
                                 <Table.TextCell>Token ID</Table.TextCell>
-                                <Table.TextCell>{apiRes[network].nft.tokenId}</Table.TextCell>
+                                <Table.TextCell><CircleArrowLeftIcon onClick={() => handlePrev(apiRes[network].nft.contract.address, network, apiRes[network].nft.tokenId)} />
+                                    <Strong>{apiRes[network].nft.tokenId}</Strong>
+                                    <CircleArrowRightIcon onClick={() => handleNext(apiRes[network].nft.contract.address, network, apiRes[network].nft.tokenId)} /></Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle}>
                                 <Table.TextCell>Token Type</Table.TextCell>
                                 <Table.TextCell>{apiRes[network].nft.tokenType}</Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle}>
-                                <Table.TextCell style={tableStyle}>Last Updated:</Table.TextCell>
+                                <Table.TextCell >Last Updated:</Table.TextCell>
                                 <Table.TextCell>{apiRes[network].nft.timeLastUpdated}</Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle}>
-                                <Table.TextCell style={tableStyle}>Total Supply:</Table.TextCell>
+                                <Table.TextCell >Total Supply:</Table.TextCell>
                                 <Table.TextCell>{apiRes[network].nft.contract.totalSupply}</Table.TextCell>
                             </Table.Row>
-                            <Table.Row style={tableStyle}>
-                                <Table.TextCell style={tableStyle}>Network</Table.TextCell>
+                            <Table.Row style={tableStyle} >
+                                <Table.TextCell >Network</Table.TextCell>
                                 <Table.TextCell>{network}</Table.TextCell>
                             </Table.Row>
                         </Table.Body>
