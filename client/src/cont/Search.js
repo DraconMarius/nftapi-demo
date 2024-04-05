@@ -47,17 +47,24 @@ function Search() {
             if (searchParams.walletAdd) {
                 data = await getNFTsForOwner(searchParams.walletAdd);
                 // getTokenBalance(searchCriteria.walletAdd)
-                setType('wallet')
+                data ?
+                    setType('wallet') :
+                    setType('error')
 
             } else if (searchParams.collectionAdd) {
                 data = await getNFTsCollection(searchParams.network,
                     searchParams.collectionAdd)
-                setType('collection')
+                data ?
+                    setType('collection') :
+                    setType('error')
 
             } else if (searchParams.tokenId) {
                 data = await getNFT(searchParams.network,
                     searchParams.tokenId, searchParams.contractAdd)
-                setType('NFT')
+                data ?
+                    setType('NFT') :
+                    setType('error')
+
             } else {
                 setType('default')
             }
@@ -90,17 +97,26 @@ function Search() {
 
     useEffect(() => {
         console.log(apiRes)
-        if (searchParams.walletAdd) {
-            setType('wallet')
+        // try {
+        //     if (apiRes === undefined) {
+        //         setType("error")
+        //     }
+        //     // if (searchParams.walletAdd) {
+        //     //     setType('wallet')
 
-        } else if (searchParams.collectionAdd) {
-            setType('collection')
+        //     // } else if (searchParams.collectionAdd) {
+        //     //     setType('collection')
 
-        } else if (searchParams.tokenId) {
-            setType('NFT')
-        } else {
-            setType('default')
-        }
+        //     // } else if (searchParams.tokenId) {
+        //     //     setType('NFT')
+        //     // } else {
+        //     //     setType('default')
+        //     // }
+        // } catch (err) {
+        //     console.error("Error fetching data:", err)
+        //     setType('error')
+        //     return null
+        // }
 
     }, [apiRes])
 
@@ -113,11 +129,14 @@ function Search() {
                     <Spinner marginX="auto" marginY={120} />
                 </Overlay>
             </Pane >
-            {((type === "default") && (loading === false)) ?
+            {((type === "default") && (loading === false) && !apiRes) ?
                 <Pane display="flex"
-                    justifyContent="center" alignItems="center">
-                    <Pane display="flex" justifyContent="center" alignItems="center">
-                        <Typewriter
+                    justifyContent="center" alignItems="center" marginTop={16}>
+                    <Pane display="flex" flexDirection="column">
+                        <Typewriter options={{
+                            loop: true,
+                            skipAddStyles: true,
+                        }}
                             onInit={(typewriter) => {
                                 typewriter.typeString('You can see all NFT owned by a wallet address')
                                     .pauseFor(800)
@@ -136,7 +155,7 @@ function Search() {
                     </Pane>
                 </Pane>
                 : (loading === true) ?
-                    <>l-o-a-d-i-n-g</> : (type && (loading === false)) ?
+                    <>l-o-a-d-i-n-g</> : (apiRes && type && (loading === false)) ?
                         < Display apiRes={apiRes} type={type} /> : <Pane>Error</Pane>
             }
         </>

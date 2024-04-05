@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 //db get
 import { getAPIKey, initdb, resetDB } from './util/idb';
 //components import
@@ -23,7 +23,7 @@ function App() {
           <Nav></Nav>
           {/* react router to handle change of page */}
           <Routes>
-            {/* <Route exact path="/" element={<HomeContainer />} /> */}
+            <Route exact path="/" element={<Navigate replace to="/search" />} />
             <Route exact path="/search" element={<Search />} />
             {/* <Route exact path="/readme" element={<ReadMe />} /> */}
           </Routes>

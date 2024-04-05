@@ -114,16 +114,16 @@ function Nav() {
                         </Select>) : <></>}
 
                         {idOp ? (
-                            <Pane display='flex' alignItems='center' justifyContent="center" height="50%">
+                            <Pane flex={1}>
 
                                 <TextInput
-
+                                    width="100%"
                                     placeholder="tokeId"
                                     onChange={e => setId(e.target.value)}
                                 />
                             </Pane>) : <></>}
 
-                        <Pane alignItems='center' justifyContent="center">
+                        <Pane >
                             <TextInput
                                 placeholder="Search..."
                                 onChange={e => setString(e.target.value)}
