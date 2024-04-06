@@ -33,7 +33,7 @@ function Nft({ apiRes }) {
         resetSearchParams();
         setSearchParams("network", net);
         setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", nextIdd)
+        setSearchParams("tokenId", nextId)
     };
 
     const handlePrev = (contractAdd, net, id) => {
