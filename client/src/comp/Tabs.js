@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {
     Pane,
     Tablist,
-    Tab,
-    Paragraph,
+    Tab
 } from 'evergreen-ui';
 
 import Grid from './Grid';
+import Metadata from "./Metadata"
 
 function Tabs({ apiRes, type }) {
     console.log(apiRes)
@@ -28,12 +28,12 @@ function Tabs({ apiRes, type }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const networks = Object.keys(apiRes);
-    console.log(networks)
+    // console.log(networks)
     // console.log(apiRes.Eth.nfts.length)
     return (
         <Pane display="flex" width="100%">
             {/* if type is wallet */}
-            {(displayType === "wallet") ? (
+            {(apiRes && (displayType === "wallet")) ? (
                 <Pane display="flex" width="100%">
                     <Tablist display="flex" flexDirection="column" marginRight={8}>
                         {networks.map((network, index) => (
@@ -44,7 +44,7 @@ function Tabs({ apiRes, type }) {
                                 isSelected={index === selectedIndex}
                                 aria-controls={`panel-${network}`}
                             >
-                                {network} ({apiRes[network].totalCount || "null"})
+                                {network} ({apiRes[network].totalCount || " null "})
                             </Tab>
                         ))}
                     </Tablist>
@@ -59,7 +59,12 @@ function Tabs({ apiRes, type }) {
                                 aria-hidden={index !== selectedIndex}
                                 display={index === selectedIndex ? 'grid' : 'none'}
                             >
-                                <Paragraph  >Total: {apiRes[network]?.totalCount || " null"}</Paragraph>
+                                <Metadata
+                                    type={"wal"}
+                                    net={network}
+                                    validAt={apiRes[network]?.validAt}
+                                    totalCount={apiRes[network]?.totalCount}
+                                />
                                 <Pane flex="1" justifyContent="center" display="grid"
                                     gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
                                     padding={8}
@@ -70,7 +75,7 @@ function Tabs({ apiRes, type }) {
 
                                             < Grid
                                                 key={itemIndex}
-                                                imageUrl={item.image.cachedUrl}
+                                                imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl}
                                                 fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
                                                 name={item.title || item.raw.metadata.name}
                                                 contractAdd={item.contract.address}
@@ -83,7 +88,7 @@ function Tabs({ apiRes, type }) {
                             </Pane>
                         ))}
                     </Pane>
-                </Pane>) :
+                </Pane>) : (apiRes && (type === "collection")) ?
                 // {/* if type is collections */ }
                 (
                     <Pane display="flex" width="100%">
@@ -110,7 +115,14 @@ function Tabs({ apiRes, type }) {
                                     aria-hidden={index !== selectedIndex}
                                     display={index === selectedIndex ? 'grid' : 'none'}
                                 >
-                                    <Paragraph >Collection: {apiRes[network]?.okNfts[0]?.collection?.name || "null"}</Paragraph>
+                                    <Metadata
+
+                                        type={"col"}
+                                        net={network}
+                                        name={apiRes[network]?.okNfts[0]?.collection?.name || apiRes[network]?.contract?.name || apiRes[network]?.raw?.name}
+                                        symbol={apiRes[network]?.okNfts[0]?.contract?.symbol}
+                                        openSeaMetadata={(apiRes[network]?.okNfts[0]?.contract?.openSeaMetadata) || "null"}
+                                    />
                                     <Pane flex="1" justifyContent="center" display="grid"
                                         gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
                                         padding={8}
@@ -118,7 +130,7 @@ function Tabs({ apiRes, type }) {
                                         {apiRes[network]?.okNfts.map((item, itemIndex) => (
                                             <Grid
                                                 key={itemIndex}
-                                                imageUrl={item.image.cachedUrl || item.image.pngUrl}
+                                                imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl}
                                                 fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
                                                 name={item.name || item.raw.metadata.name}
                                                 contractAdd={item.contract.address}
@@ -130,7 +142,7 @@ function Tabs({ apiRes, type }) {
                                 </Pane>
                             ))}
                         </Pane>
-                    </Pane>)
+                    </Pane>) : <Pane />
             }
         </Pane>
     );

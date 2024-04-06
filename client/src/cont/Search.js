@@ -20,11 +20,7 @@ import {
     Button,
     Overlay,
     Spinner,
-    Position,
-    Paragraph,
-    ZoomOutIcon,
-    ZoomInIcon,
-    IconButton
+    Alert
 } from 'evergreen-ui';
 
 import Typewriter from 'typewriter-effect';
@@ -119,12 +115,15 @@ function Search() {
         // }
 
     }, [apiRes])
+    const overflow = {
+        overflow: 'wrap',
+    }
 
 
 
     return (
         <>
-            <Pane>
+            <Pane style={overflow}>
                 <Overlay isShown={loading}>
                     <Spinner marginX="auto" marginY={120} />
                 </Overlay>
@@ -156,7 +155,13 @@ function Search() {
                 </Pane>
                 : (loading === true) ?
                     <>l-o-a-d-i-n-g</> : (apiRes && type && (loading === false)) ?
-                        < Display apiRes={apiRes} type={type} /> : <Pane>Error</Pane>
+                        < Display apiRes={apiRes} type={type} /> : <Pane>
+                            <Alert intent="danger"
+                                title="Error Display Data"
+                            >
+                                Error fetching data from server, NFT data undefined
+                            </Alert>
+                        </Pane>
             }
         </>
     );

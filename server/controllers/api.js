@@ -5,8 +5,11 @@ const axios = require('axios')
 const Key = process.env.ALCHEMY_API_KEY
 
 // Configuration settings for each network
-//**Polygon's setting using Network is listed as POLYGONZKEVM_MAINNET
-//using it causes an error saying that is not a valid network hence the hard code
+//**
+//Polygon's setting using sdk is listed as Network.POLYGONZKEVM_MAINNET
+//using it causes an 400 error 
+//                     400: Specified chain [POLYGONZEVM] not supported
+// and POLYGON_MAINNET does not exists within Network. but string works: `polygon-mainnet`
 const configs = {
     Eth: {
         apiKey: Key,
@@ -23,6 +26,11 @@ const configs = {
     Optimism: {
         apiKey: Key,
         network: Network.OPT_MAINNET
+    },
+
+    Base: {
+        apiKey: Key,
+        network: Network.BASE_MAINNET
     }
 };
 
@@ -229,7 +237,8 @@ router.get('/nft/wallet/:address', async (req, res) => {
                 [net]: {
                     okNfts,
                     "totalCount": nfts.totalCount,
-                    "pageKey": nfts.pageKey
+                    "pageKey": nfts.pageKey,
+                    "validAt": nfts.validAt
                 }
             };
         } catch (err) {

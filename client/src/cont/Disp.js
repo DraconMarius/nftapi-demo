@@ -10,10 +10,9 @@ import NFT from '../comp/NFT';
 import Wallet from './Wallet';
 
 function Display({ apiRes, type }) {
-    const { displayType, setDisplay } = useState('default')
 
     useEffect(() => {
-        if (apiRes === undefined) {
+        if (apiRes === (undefined || null)) {
             type = 'error'
         }
     }, [apiRes])
@@ -36,11 +35,11 @@ function Display({ apiRes, type }) {
                                     </Alert> :
                                     <>LOADING...</>
                     }
-                </Pane> : <>  <Alert intent="danger"
+                </Pane> : <Alert intent="danger"
                     title="Error Display Data"
                 >
                     Error fetching data from server, NFT data undefined
-                </Alert> </>
+                </Alert>
             }
         </>
     )
