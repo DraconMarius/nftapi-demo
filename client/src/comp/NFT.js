@@ -28,23 +28,23 @@ function Nft({ apiRes }) {
     const handleNext = (contractAdd, net, id) => {
         parseInt(id)
         console.log(id)
-        const nextId = id++
+        const nextId = parseInt(id) + 1
         console.log(nextId)
         resetSearchParams();
         setSearchParams("network", net);
         setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", id)
+        setSearchParams("tokenId", nextIdd)
     };
 
     const handlePrev = (contractAdd, net, id) => {
         parseInt(id)
         console.log(id)
-        const nextId = id--
+        const nextId = parseInt(id) - 1
         console.log(nextId)
         resetSearchParams();
         setSearchParams("network", net);
         setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", id)
+        setSearchParams("tokenId", nextId)
     };
 
     const overlayStyle = {
@@ -61,9 +61,9 @@ function Nft({ apiRes }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '48px', // Adjust the height as needed
+        height: '48px',
         background: 'rgba(249, 250, 252, 0.8)',
-        borderTopLeftRadius: '5px', // Match your theme's border radius
+        borderTopLeftRadius: '5px',
         borderTopRightRadius: '5px',
     };
 
@@ -72,19 +72,21 @@ function Nft({ apiRes }) {
         backgroundColor: 'rgba(249, 250, 252, 0.4)',
     };
 
+
     return (
         <Pane display="flex"
-            width="100%"
-            alignItems="center"
             justifyContent="center"
+
             background={`url('${apiRes[network]?.nft?.collection?.bannerImageUrl || apiRes[network].nft.image.cachedUrl}')`}
             backgroundPosition="center"
             position="relative" >
-            <div style={overlayStyle} /> {/* Overlay */}
+            <Pane style={overlayStyle} /> {/* Overlay */}
             <Card
                 elevation={4}
-                padding={20}
-                margin={20}
+                padding={16}
+                margin={24}
+                width="100%"
+                maxWidth={960}
                 display="flex"
                 tint="2"
                 flexDirection="column"
@@ -92,28 +94,29 @@ function Nft({ apiRes }) {
                 zIndex="1"
             >
                 <Pane
+
                     width="100%"
                     height="auto"
-
                 >
-                    <Heading size={800}>
-                        {apiRes[network].nft.name}
-                    </Heading>
+                    <Strong size={800}>
+                        {apiRes[network]?.nft?.name}
+                    </Strong>
                     <Paragraph> -  {apiRes[network]?.nft?.collection?.name || apiRes[network]?.nft?.name}</Paragraph>
                 </Pane>
-
-                <Image
-                    src={apiRes[network].nft.image.cachedUrl}
-                    alt={apiRes[network].nft.name}
-                    marginTop={16}
-                    width="50%"
-                    elevation="4"
-                />
-                <Pane width="100%" marginTop="16">
-                    <Pane style={titleStyle}>
+                <Pane>
+                    <Image
+                        src={apiRes[network].nft.image.cachedUrl}
+                        alt={apiRes[network].nft.name}
+                        marginTop={16}
+                        marginBottom={16}
+                        width={600}
+                    />
+                </Pane>
+                <Pane width="100%" marginTop="32">
+                    <Pane style={titleStyle} >
                         <Strong>NFT Metadata:</Strong>
                     </Pane>
-                    <Table >
+                    <Table  >
                         <Table.Body >
                             <Table.Row style={tableStyle} onClick={() => handleCollection(apiRes[network].nft.contract.address, network)}>
                                 <Table.TextCell>Contract Address</Table.TextCell>
@@ -123,7 +126,7 @@ function Nft({ apiRes }) {
                                     </Button>
                                 </Table.TextCell>
                             </Table.Row>
-                            <Table.Row style={tableStyle} display="flex" alignContent="center">
+                            <Table.Row style={tableStyle} >
                                 <Table.TextCell>Token ID</Table.TextCell>
                                 <Table.TextCell>
                                     <Button appearance="minimal">
@@ -135,17 +138,25 @@ function Nft({ apiRes }) {
                                     </Button>
                                 </Table.TextCell>
                             </Table.Row>
+                            <Table.Row style={tableStyle} height="auto" display="flex">
+                                <Table.TextCell>Description</Table.TextCell>
+                                <Table.TextCell textProps={{
+                                    whiteSpace: 'unset',
+                                    maxWidth: 'auto',
+                                    overflow: "auto",
+                                }}><Pane display="flex" >{apiRes[network].nft.description || apiRes[network].nft.contract.openSeaMetadata.description}</Pane></Table.TextCell>
+                            </Table.Row>
                             <Table.Row style={tableStyle}>
                                 <Table.TextCell>Token Type</Table.TextCell>
-                                <Table.TextCell>{apiRes[network].nft.tokenType}</Table.TextCell>
+                                <Table.TextCell >{apiRes[network].nft.tokenType}</Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle}>
                                 <Table.TextCell >Last Updated:</Table.TextCell>
-                                <Table.TextCell>{apiRes[network].nft.timeLastUpdated}</Table.TextCell>
+                                <Table.TextCell >{apiRes[network].nft.timeLastUpdated}</Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle}>
                                 <Table.TextCell >Total Supply:</Table.TextCell>
-                                <Table.TextCell>{apiRes[network].nft.contract.totalSupply}</Table.TextCell>
+                                <Table.TextCell>{apiRes[network].nft.contract.totalSupply || null}</Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle} >
                                 <Table.TextCell >Network</Table.TextCell>

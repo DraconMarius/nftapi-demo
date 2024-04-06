@@ -28,10 +28,10 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
 
 
             <Card
-                elevation={2}
+                elevation={3}
                 width={200}
                 height={200}
-                margin={12}
+                margin={8}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"

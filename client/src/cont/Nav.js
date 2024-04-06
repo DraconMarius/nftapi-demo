@@ -111,6 +111,8 @@ function Nav() {
                             <option value="Polygon">Polygon</option>
                             <option value="Arbitrum">Arbitrum</option>
                             <option value="Optimism">Optimism</option>
+                            <option value="Base">Base</option>
+
                         </Select>) : <></>}
 
                         {idOp ? (
