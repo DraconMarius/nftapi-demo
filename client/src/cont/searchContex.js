@@ -32,8 +32,8 @@ export function SearchProvider({ children }) {
         pageKey: ''
     });
 
-    const updateSearchParams = (field, value) => {
-        setSearchParams(prev => ({ ...prev, [field]: value }));
+    const updateSearchParams = (newParams) => {
+        setSearchParams({ ...blankState, ...newParams });
     };
 
     const resetSearchParams = () => {

@@ -39,23 +39,24 @@ function Nav() {
     const handleChange = (type, string) => {
         // Update based on type and input
         setNet('')
-        resetSearchParams()
-        setSearchParams(type, string);
+        setSearchParams({ [type]: string });
     }
 
     const handleChangeWithNet = (type, string, net) => {
 
-        resetSearchParams()
-        setSearchParams(type, string);
-        setSearchParams("network", net);
+        setSearchParams({
+            [type]: string,
+            "network": net
+        });
     }
 
     const handleChangeWithId = (type, string, net, id) => {
 
-        resetSearchParams()
-        setSearchParams(type, string);
-        setSearchParams("network", net);
-        setSearchParams("tokenId", id);
+        setSearchParams({
+            [type]: string,
+            "network": net,
+            "tokenId": id
+        });
     }
 
 

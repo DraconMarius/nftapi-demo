@@ -8,9 +8,12 @@ import {
 
 import Grid from './Grid';
 import Metadata from "./Metadata"
+import { useSearch } from '../cont/searchContex';
 
 function Tabs({ apiRes, type }) {
-    console.log(apiRes)
+    // console.log(apiRes)
+
+    const { setSearchParams, resetSearchParams } = useSearch();
 
     // Add pageKey to the state
     const [pageKey, setPageKey] = useState('');
@@ -23,9 +26,12 @@ function Tabs({ apiRes, type }) {
         setType(type)
     }, [apiRes, type])
 
-    // useEffect(() => {
-    //     console.log(type)
-    // }, [type])
+    const handleNextPg = (network, pageKey, address) => {
+        resetSearchParams();
+        setSearchParams('network', network);
+        setSearchParams()
+
+    }
 
     // console.log("eth:", apiRes.Eth.nfts.totalCount)
     const [selectedIndex, setSelectedIndex] = useState(0);

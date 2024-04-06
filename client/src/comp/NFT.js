@@ -20,9 +20,10 @@ function Nft({ apiRes }) {
 
     const { setSearchParams, resetSearchParams } = useSearch();
     const handleCollection = (collectionAdd, net) => {
-        resetSearchParams();
-        setSearchParams("network", net);
-        setSearchParams("collectionAdd", collectionAdd)
+        setSearchParams({
+            "collectionAdd": collectionAdd,
+            "network": net,
+        });
     };
 
     const handleNext = (contractAdd, net, id) => {
@@ -30,21 +31,23 @@ function Nft({ apiRes }) {
         console.log(id)
         const nextId = parseInt(id) + 1
         console.log(nextId)
-        resetSearchParams();
-        setSearchParams("network", net);
-        setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", nextIdd)
+        setSearchParams({
+            "contractAdd": contractAdd,
+            "network": net,
+            "tokenId": nextId
+        });
     };
 
     const handlePrev = (contractAdd, net, id) => {
         parseInt(id)
         console.log(id)
-        const nextId = parseInt(id) - 1
-        console.log(nextId)
-        resetSearchParams();
-        setSearchParams("network", net);
-        setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", nextId)
+        const prevId = parseInt(id) - 1
+        console.log(prevId)
+        setSearchParams({
+            "contractAdd": contractAdd,
+            "network": net,
+            "tokenId": prevId
+        })
     };
 
     const overlayStyle = {

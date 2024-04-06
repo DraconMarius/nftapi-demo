@@ -16,10 +16,11 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
     };
 
     const handleClick = (contractAdd, net, id) => {
-        resetSearchParams();
-        setSearchParams("network", net);
-        setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", id)
+        setSearchParams({
+            "contractAdd": contractAdd,
+            "network": net,
+            "tokenId": id
+        });
     };
 
 
