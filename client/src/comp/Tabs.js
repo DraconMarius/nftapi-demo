@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
     Pane,
     Tablist,
-    Tab
+    Tab,
+    Pagination
 } from 'evergreen-ui';
 
 import Grid from './Grid';
@@ -11,6 +12,8 @@ import Metadata from "./Metadata"
 function Tabs({ apiRes, type }) {
     console.log(apiRes)
 
+    // Add pageKey to the state
+    const [pageKey, setPageKey] = useState('');
 
     //conditionally render chunk based on the response from server
     const [displayType, setType] = useState("wallet")

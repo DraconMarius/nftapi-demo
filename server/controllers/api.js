@@ -301,12 +301,13 @@ router.get('/nft/collection/:net', async (req, res) => {
         try {
             console.log('url', options.url)
             const nfts = await axios.request(options);
-            console.log(nfts)
+            // console.log(nfts.data.nfts[0].image)
             console.log(`completed ${net}`)
             console.log(`got item in Collection - ${finalInput}, ${nfts.data.nfts.length}`)
             const okNfts = nfts.data.nfts.filter(nft => {
-                return (nft.image && typeof nft.image.originalUrl) === 'string' && nft.image.originalUrl.startsWith('http');
+                return nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
             });
+            // console.log(okNfts)
             return {
                 [net]: {
                     okNfts,
