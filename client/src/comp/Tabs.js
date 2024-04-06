@@ -3,7 +3,8 @@ import {
     Pane,
     Tablist,
     Tab,
-    Pagination
+    Button, CircleArrowRightIcon,
+    CircleArrowLeftIcon,
 } from 'evergreen-ui';
 
 import Grid from './Grid';
@@ -11,12 +12,11 @@ import Metadata from "./Metadata"
 import { useSearch } from '../cont/searchContex';
 
 function Tabs({ apiRes, type }) {
-    // console.log(apiRes)
-
-    const { setSearchParams, resetSearchParams } = useSearch();
-
-    // Add pageKey to the state
-    const [pageKey, setPageKey] = useState('');
+    // console.log(type)
+    //now storing prev/page Key in contex
+    const { searchParams, setSearchParams } = useSearch();
+    const [lastPage, setLastPage] = useState(false);
+    const [firstPage, setFirstPage] = useState(true);
 
     //conditionally render chunk based on the response from server
     const [displayType, setType] = useState("wallet")
@@ -24,14 +24,41 @@ function Tabs({ apiRes, type }) {
         // console.log(apiRes.Eth.totalCount)
         console.log(type)
         setType(type)
+
     }, [apiRes, type])
 
-    const handleNextPg = (network, pageKey, address) => {
-        resetSearchParams();
-        setSearchParams('network', network);
-        setSearchParams()
+    useEffect(() => {
+        //has pageKey?
+        setLastPage(!apiRes[searchParams.network]?.pageKey);
+        setFirstPage(!searchParams?.prevKey[0])
+        // Similarly, you might set `firstPage` based on some condition, e.g., presence of `prevKey`, if applicable
+    }, [apiRes, searchParams.network]);
 
-    }
+    const handleNextPg = (network, pageKey, address) => {
+        if (pageKey) {
+            setSearchParams({
+                network: network,
+                walletAdd: address,
+                pageKey: pageKey,
+            });
+        }
+    };
+
+    const handlePrevPage = (network, address) => {
+        const { prevKeys } = searchParams;
+        if (prevKeys.length > 0) {
+            const prevPageKey = prevKeys[prevKeys.length - 1];
+            setSearchParams({
+                network: network,
+                walletAdd: address,
+                prevKey: prevPageKey,
+            });
+        } else {
+            setSearchParams({
+                walletAdd: address
+            })
+        };
+    };
 
     // console.log("eth:", apiRes.Eth.nfts.totalCount)
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -59,6 +86,7 @@ function Tabs({ apiRes, type }) {
                     </Tablist>
                     <Pane padding={8} flex="1">
                         {networks.map((network, index) => (
+
                             <Pane
                                 key={network}
                                 id={`panel-${network}`}
@@ -67,7 +95,24 @@ function Tabs({ apiRes, type }) {
                                 aria-labelledby={network}
                                 aria-hidden={index !== selectedIndex}
                                 display={index === selectedIndex ? 'grid' : 'none'}
+
                             >
+                                <Pane display="flex" justifyContent="space-between" padding={16}>
+                                    <Button
+                                        iconBefore={CircleArrowLeftIcon}
+                                        onClick={() => handlePrevPage()}
+                                        disabled={firstPage} // Disable the button on the first page
+                                    >
+                                        Prev
+                                    </Button>
+                                    <Button
+                                        iconBefore={CircleArrowRightIcon}
+                                        onClick={() => handleNextPage()}
+                                        disabled={lastPage} // Disable the button on the last page
+                                    >
+                                        Next
+                                    </Button>
+                                </Pane>
                                 <Metadata
                                     type={"wal"}
                                     net={network}

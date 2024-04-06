@@ -152,8 +152,11 @@ router.get('/nft/wallet/:net/:address/page', async (req, res) => {
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
             return {
                 [net]: {
-                    okNfts,
-                    "pageKey": okNfts.pageKey
+                    nfts,
+                    "totalCount": nfts.totalCount,
+                    "pageKey": nfts.pageKey || "end of page",
+                    "validAt": nfts.validAt,
+                    "walletAdd": address
                 }
             };
         } catch (err) {
@@ -238,7 +241,8 @@ router.get('/nft/wallet/:address', async (req, res) => {
                     okNfts,
                     "totalCount": nfts.totalCount,
                     "pageKey": nfts.pageKey,
-                    "validAt": nfts.validAt
+                    "validAt": nfts.validAt,
+                    "walletAdd": address
                 }
             };
         } catch (err) {

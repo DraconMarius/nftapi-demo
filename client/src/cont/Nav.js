@@ -35,28 +35,42 @@ function Nav() {
     const [idOp, setIdOp] = useState(false)
     const { searchParams, setSearchParams, resetSearchParams } = useSearch();
 
-
+    const blankState = {
+        network: '',
+        walletAdd: '',
+        collectionAdd: '',
+        contractAdd: '',
+        tokenId: '',
+        pageKey: '',
+        prevKey: []
+    }
     const handleChange = (type, string) => {
         // Update based on type and input
         setNet('')
-        setSearchParams({ [type]: string });
+        const search = {
+            ...blankState,
+            [type]: string
+        }
+        setSearchParams(search);
     }
 
     const handleChangeWithNet = (type, string, net) => {
-
-        setSearchParams({
+        const search = {
+            ...blankState,
             [type]: string,
             "network": net
-        });
+        }
+        setSearchParams(search);
     }
 
     const handleChangeWithId = (type, string, net, id) => {
-
-        setSearchParams({
+        const search = {
+            ...blankState,
             [type]: string,
             "network": net,
             "tokenId": id
-        });
+        }
+        setSearchParams(search);
     }
 
 

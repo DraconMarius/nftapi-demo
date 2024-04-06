@@ -6,7 +6,8 @@ const blankState = {
     collectionAdd: '',
     contractAdd: '',
     tokenId: '',
-    pageKey: ''
+    pageKey: '',
+    prevKey: []
 }
 
 const SearchContext = createContext({
@@ -16,7 +17,8 @@ const SearchContext = createContext({
         collectionAdd: '',
         contractAdd: '',
         tokenId: '',
-        pageKey: ''
+        pageKey: '',
+        prevKey: []
     },
     setParams: () => { }
 });
@@ -29,15 +31,36 @@ export function SearchProvider({ children }) {
         collectionAdd: '',
         contractAdd: '',
         tokenId: '',
-        pageKey: ''
+        pageKey: '',
+        prevKey: []
     });
 
     const updateSearchParams = (newParams) => {
-        setSearchParams({ ...blankState, ...newParams });
+        setSearchParams(prev => {
+            let updatedPrevKeys = Array.isArray(prev.prevKey) ? [...prev.prevKey] : [];
+
+            if (newParams.reset) {
+
+                delete newParams.reset;
+
+                return { ...blankState, ...newParams, prevKey: updatedPrevKeys };
+            }
+
+            if (newParams.pageKey && !newParams.prevKey && prev.pageKey) {
+                updatedPrevKeys.push(prev.pageKey);
+            }
+            else if (newParams.prevKey) {
+                newParams.pageKey = updatedPrevKeys.pop(); // This adjusts prevKeys
+                delete newParams.prevKey;
+            }
+
+            return { ...prev, ...newParams, prevKey: updatedPrevKeys };
+        });
     };
 
     const resetSearchParams = () => {
         setSearchParams(blankState);
+
     };
 
     // The context value includes both the searchParams and the updater function

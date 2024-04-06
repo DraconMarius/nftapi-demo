@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSearch } from '../cont/searchContex'
 import {
     Pane,
     Card,
-    Heading,
     Image,
     Paragraph,
     Strong,
@@ -18,11 +17,13 @@ function Nft({ apiRes }) {
     const network = Object.keys(apiRes)[0];
     console.log(network)
 
-    const { setSearchParams, resetSearchParams } = useSearch();
+    const { setSearchParams } = useSearch();
     const handleCollection = (collectionAdd, net) => {
         setSearchParams({
+            "walletAdd": '',
             "collectionAdd": collectionAdd,
             "network": net,
+            "tokeId": ''
         });
     };
 
@@ -101,7 +102,7 @@ function Nft({ apiRes }) {
                     width="100%"
                     height="auto"
                 >
-                    <Strong size={800}>
+                    <Strong size={600}>
                         {apiRes[network]?.nft?.name}
                     </Strong>
                     <Paragraph> -  {apiRes[network]?.nft?.collection?.name || apiRes[network]?.nft?.name}</Paragraph>
