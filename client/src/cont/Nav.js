@@ -20,8 +20,6 @@ import {
     IconButton
 } from 'evergreen-ui';
 
-import { updateAPIKey, deleteKey } from '../util/idb';
-
 
 
 function Nav() {

@@ -124,7 +124,7 @@ function Search() {
                 </Overlay>
             </Pane >
             {((type === "default") && (loading === false) && !apiRes) ?
-                <Pane 
+                <Pane display="flex"
                     justifyContent="center" alignItems="center" marginTop={16}>
                     <Pane display="flex" flexDirection="column">
                         <Typewriter options={{

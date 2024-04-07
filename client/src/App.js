@@ -2,8 +2,7 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-//db get
-import { getAPIKey, initdb, resetDB } from './util/idb';
+
 //components import
 import Nav from './cont/Nav';
 import Search from './cont/Search'

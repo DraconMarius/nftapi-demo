@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Card, Tooltip,
+    Pane, Card, Tooltip,
 } from 'evergreen-ui';
 import { useSearch } from '../cont/searchContex';
 
@@ -30,6 +30,7 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
 
 
     return (
+
         <Tooltip content={name}>
             <Card
                 elevation={3}
@@ -41,17 +42,18 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
                 alignItems="center"
                 flexDirection="column"
                 position="relative"
-                overflow="hidden"
                 backgroundSize="cover"
                 onClick={() => handleClick(contractAdd, net, id)}
             >
-                <img
-                    src={currentImageUrl}
-                    alt={name}
-                    style={{ width: '100%', height: 'auto' }}
-                    onError={handleImageError} />
+                <Pane width={200} height={200} overflow="hidden">
+                    <img
+                        src={currentImageUrl}
+                        alt={name}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={handleImageError} />
+                </Pane>
             </Card>
-        </Tooltip>
+        </Tooltip >
     );
 }
 
