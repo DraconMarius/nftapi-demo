@@ -11,9 +11,15 @@ function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCoun
     const openSeaExtra = openSeaMetadata ? Object.entries(openSeaMetadata) : null
     // console.log(openSeaExtra)
 
+
     return (
-        <Pane>
-            <Marquee>
+        <Pane width="100%" flex={1}>
+            <Marquee
+                pauseOnHover={true}
+                gradient={true}
+                gradientColor='248,251,253'
+                gradientWidth={200}
+            >
                 <Badge color='neutral'>Network:</Badge>
                 <Badge color='purple' marginRight={16}>{net}</Badge>
 
@@ -33,7 +39,7 @@ function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCoun
                         <Pill color='yellow' marginRight={16}>{symbol}</Pill>
 
                         {openSeaExtra && openSeaExtra.map(([key, val], index) => (
-                            <React.Fragment key={key}>
+                            <React.Fragment key={key} >
                                 <Badge color='teal'>{key}:</Badge>
                                 <Pill color='red' marginRight={16}>{val || 'N/A'}</Pill>
                             </React.Fragment>

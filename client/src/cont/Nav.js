@@ -20,8 +20,6 @@ import {
     IconButton
 } from 'evergreen-ui';
 
-import { updateAPIKey, deleteKey } from '../util/idb';
-
 
 
 function Nav() {
@@ -33,29 +31,44 @@ function Nav() {
     const [NetOp, setNetOp] = useState(false)
     const [id, setId] = useState('')
     const [idOp, setIdOp] = useState(false)
-    const { searchParams, setSearchParams, resetSearchParams } = useSearch();
+    const { searchParams, updateSearchParams } = useSearch();
 
-
+    const blankState = {
+        network: '',
+        walletAdd: '',
+        collectionAdd: '',
+        contractAdd: '',
+        tokenId: '',
+        pageKey: '',
+        prevKeys: []
+    }
     const handleChange = (type, string) => {
         // Update based on type and input
         setNet('')
-        resetSearchParams()
-        setSearchParams(type, string);
+        const search = {
+            ...blankState,
+            [type]: string
+        }
+        updateSearchParams(search);
     }
 
     const handleChangeWithNet = (type, string, net) => {
-
-        resetSearchParams()
-        setSearchParams(type, string);
-        setSearchParams("network", net);
+        const search = {
+            ...blankState,
+            [type]: string,
+            "network": net
+        }
+        updateSearchParams(search);
     }
 
     const handleChangeWithId = (type, string, net, id) => {
-
-        resetSearchParams()
-        setSearchParams(type, string);
-        setSearchParams("network", net);
-        setSearchParams("tokenId", id);
+        const search = {
+            ...blankState,
+            [type]: string,
+            "network": net,
+            "tokenId": id
+        }
+        updateSearchParams(search);
     }
 
 
@@ -65,7 +78,7 @@ function Nav() {
 
     // useEffect(() => {
     //     console.log(net);
-    //     setSearchParams("network", net)
+    //     updateSearchParams("network", net)
     // }, [net])
 
     useEffect(() => {

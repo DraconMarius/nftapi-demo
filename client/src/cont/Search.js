@@ -35,43 +35,58 @@ function Search() {
     //storing pgKey response
     const [pgKey, setPgKey] = useState([]);
 
+    const determineFetchType = (params) => {
+        // Check for specific combinations of parameters
+        if (params.walletAdd && !params.collectionAdd && !params.tokenId) {
+            return 'walletAdd';
+        } else if (params.collectionAdd && params.network && !params.tokenId) {
+            return 'collection';
+        } else if (params.tokenId && params.network && params.contractAdd) {
+            return 'NFT';
+        } else if (params.network && params.walletAdd && params.pageKey) {
+            return 'page';
+        }
+        // Add more conditions as needed for different fetch scenarios
+
+        return 'default'; // Default fetchType if none of the above conditions are met
+    }
+
     const fetchServer = async (searchParams) => {
-
-        let data
-
         try {
-            if (searchParams.walletAdd) {
-                data = await getNFTsForOwner(searchParams.walletAdd);
-                // getTokenBalance(searchCriteria.walletAdd)
-                data ?
-                    setType('wallet') :
-                    setType('error')
+            let data;
+            let fetchType = determineFetchType(searchParams);
 
-            } else if (searchParams.collectionAdd) {
-                data = await getNFTsCollection(searchParams.network,
-                    searchParams.collectionAdd)
-                data ?
-                    setType('collection') :
-                    setType('error')
+            console.log('Fetch Type:', fetchType); // Debug the fetchType value
 
-            } else if (searchParams.tokenId) {
-                data = await getNFT(searchParams.network,
-                    searchParams.tokenId, searchParams.contractAdd)
-                data ?
-                    setType('NFT') :
-                    setType('error')
-
-            } else {
-                setType('default')
+            switch (fetchType) {
+                case 'walletAdd':
+                    data = await getNFTsForOwner(searchParams.walletAdd);
+                    setType(data ? 'wallet' : 'error');
+                    break;
+                case 'collection':
+                    data = await getNFTsCollection(searchParams.network, searchParams.collectionAdd);
+                    setType(data ? 'collection' : 'error');
+                    break;
+                case 'NFT':
+                    data = await getNFT(searchParams.network, searchParams.tokenId, searchParams.contractAdd);
+                    setType(data ? 'NFT' : 'error');
+                    break;
+                case 'page':
+                    data = await getNFTsPage(searchParams.network, searchParams.walletAdd, searchParams.pageKey);
+                    setType(data ? 'page' : 'error');
+                    break;
+                default:
+                    setType('default');
             }
 
-            return data
+            return data;
         } catch (error) {
-            console.error("Error fetching data:", error)
-            setType('error')
-            return null
+            console.error("Error fetching data:", error);
+            setType('error');
+            return null;
         }
-    }
+    };
+
 
     // const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
@@ -92,40 +107,20 @@ function Search() {
     }, [searchParams]);
 
     useEffect(() => {
-        console.log(apiRes)
-        // try {
-        //     if (apiRes === undefined) {
-        //         setType("error")
-        //     }
-        //     // if (searchParams.walletAdd) {
-        //     //     setType('wallet')
-
-        //     // } else if (searchParams.collectionAdd) {
-        //     //     setType('collection')
-
-        //     // } else if (searchParams.tokenId) {
-        //     //     setType('NFT')
-        //     // } else {
-        //     //     setType('default')
-        //     // }
-        // } catch (err) {
-        //     console.error("Error fetching data:", err)
-        //     setType('error')
-        //     return null
+        // if (!apiRes || !type) {
+        //     setType('error');
+        // } else {
+        //     setType(type)
         // }
-
-    }, [apiRes])
-    const overflow = {
-        overflow: 'wrap',
-    }
+    }, [apiRes, type])
 
 
 
     return (
-        <>
-            <Pane style={overflow}>
+        <Pane>
+            <Pane>
                 <Overlay isShown={loading}>
-                    <Spinner marginX="auto" marginY={120} />
+                    <Spinner marginX="auto" marginY={450} />
                 </Overlay>
             </Pane >
             {((type === "default") && (loading === false) && !apiRes) ?
@@ -163,7 +158,7 @@ function Search() {
                             </Alert>
                         </Pane>
             }
-        </>
+        </Pane>
     );
 }
 

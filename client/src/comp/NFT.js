@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSearch } from '../cont/searchContex'
 import {
     Pane,
     Card,
-    Heading,
     Image,
     Paragraph,
     Strong,
@@ -18,11 +17,17 @@ function Nft({ apiRes }) {
     const network = Object.keys(apiRes)[0];
     console.log(network)
 
-    const { setSearchParams, resetSearchParams } = useSearch();
+    const { updateSearchParams } = useSearch();
     const handleCollection = (collectionAdd, net) => {
-        resetSearchParams();
-        setSearchParams("network", net);
-        setSearchParams("collectionAdd", collectionAdd)
+        updateSearchParams({
+            "walletAdd": '',
+            "contractAdd": '',
+            "collectionAdd": collectionAdd,
+            "network": net,
+            "tokenId": '',
+            "pageKey": '',
+            "prevKeys": []
+        });
     };
 
     const handleNext = (contractAdd, net, id) => {
@@ -30,21 +35,27 @@ function Nft({ apiRes }) {
         console.log(id)
         const nextId = parseInt(id) + 1
         console.log(nextId)
-        resetSearchParams();
-        setSearchParams("network", net);
-        setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", nextId)
+
+        updateSearchParams({
+            "contractAdd": contractAdd,
+            "network": net,
+            "tokenId": nextId,
+            "pageKey": '',
+            "prevKeys": []
+        });
+
     };
 
     const handlePrev = (contractAdd, net, id) => {
         parseInt(id)
         console.log(id)
-        const nextId = parseInt(id) - 1
-        console.log(nextId)
-        resetSearchParams();
-        setSearchParams("network", net);
-        setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", nextId)
+        const prevId = parseInt(id) - 1
+        console.log(prevId)
+        updateSearchParams({
+            "contractAdd": contractAdd,
+            "network": net,
+            "tokenId": prevId
+        })
     };
 
     const overlayStyle = {
@@ -98,7 +109,7 @@ function Nft({ apiRes }) {
                     width="100%"
                     height="auto"
                 >
-                    <Strong size={800}>
+                    <Strong size={600}>
                         {apiRes[network]?.nft?.name}
                     </Strong>
                     <Paragraph> -  {apiRes[network]?.nft?.collection?.name || apiRes[network]?.nft?.name}</Paragraph>

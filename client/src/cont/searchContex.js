@@ -1,59 +1,48 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-const blankState = {
-    network: '',
-    walletAdd: '',
-    collectionAdd: '',
-    contractAdd: '',
-    tokenId: '',
-    pageKey: ''
-}
+const SearchContext = createContext();
 
-const SearchContext = createContext({
-    searchParams: {
-        network: '',
-        walletAdd: '',
-        collectionAdd: '',
-        contractAdd: '',
-        tokenId: '',
-        pageKey: ''
-    },
-    setParams: () => { }
-});
-
-// Context provider component
-export function SearchProvider({ children }) {
+export const SearchProvider = ({ children }) => {
     const [searchParams, setSearchParams] = useState({
         network: '',
         walletAdd: '',
         collectionAdd: '',
         contractAdd: '',
         tokenId: '',
-        pageKey: ''
+        pageKey: '',
+        prevKeys: [],
     });
 
-    const updateSearchParams = (field, value) => {
-        setSearchParams(prev => ({ ...prev, [field]: value }));
+    const updateSearchParams = (newParams) => {
+        setSearchParams((prev) => {
+            const updatedPrevKeys = newParams.pageKey && !newParams.isPrevPage
+                ? [...prev.prevKeys, prev.pageKey].filter(Boolean)
+                : prev.prevKeys;
+
+            if (newParams.isPrevPage) {
+                const prevPageKey = updatedPrevKeys.pop() || '';
+                return { ...prev, pageKey: prevPageKey, prevKeys: updatedPrevKeys };
+            }
+
+            return { ...prev, ...newParams, prevKeys: updatedPrevKeys };
+        });
     };
 
-    const resetSearchParams = () => {
-        setSearchParams(blankState);
-    };
-
-    // The context value includes both the searchParams and the updater function
-    const value = {
-        searchParams,
-        setSearchParams: updateSearchParams,
-        resetSearchParams
-    };
+    const resetSearchParams = () => setSearchParams({
+        network: '',
+        walletAdd: '',
+        collectionAdd: '',
+        contractAdd: '',
+        tokenId: '',
+        pageKey: '',
+        prevKeys: [],
+    });
 
     return (
-        <SearchContext.Provider value={value}>
+        <SearchContext.Provider value={{ searchParams, updateSearchParams, resetSearchParams }}>
             {children}
         </SearchContext.Provider>
     );
-}
+};
 
-export function useSearch() {
-    return useContext(SearchContext);
-}
+export const useSearch = () => useContext(SearchContext);

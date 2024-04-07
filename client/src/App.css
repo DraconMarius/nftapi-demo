@@ -37,3 +37,9 @@
     transform: rotate(360deg);
   }
 }
+
+.marquee-container {
+  max-width: 600px;
+  overflow: hidden;
+  /* Prevents overflow */
+}

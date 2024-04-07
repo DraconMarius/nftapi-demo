@@ -6,34 +6,40 @@ import {
 } from 'evergreen-ui';
 
 import Collections from './Collections';
-import NFT from '../comp/NFT';
 import Wallet from './Wallet';
+import Page from './Page'
+import NFT from '../comp/NFT';
 
 function Display({ apiRes, type }) {
+    const [displayType, setType] = useState(type)
 
     useEffect(() => {
-        if (apiRes === (undefined || null)) {
-            type = 'error'
+        if (!apiRes || !type) {
+            setType('error');
+        } else {
+            setType(type)
         }
-    }, [apiRes])
+    }, [apiRes, type]);
     return (
 
         <>
             {apiRes ?
-                <Pane>
-                    {(type === "wallet") ?
+                <Pane >
+                    {(displayType === "wallet") ?
                         <Wallet apiRes={apiRes} type={type} /> :
-                        (type === "collection") ?
+                        (displayType === "collection") ?
                             <Collections apiRes={apiRes} type={type} /> :
-                            (type === "NFT") ?
+                            (displayType === "NFT") ?
                                 <NFT apiRes={apiRes} type={type} /> :
-                                (type === "error") ?
-                                    <Alert intent="danger"
-                                        title="Error Display Data"
-                                    >
-                                        Error displaying data
-                                    </Alert> :
-                                    <>LOADING...</>
+                                (displayType === "page") ?
+                                    <Page apiRes={apiRes} type={type} /> :
+                                    (displayType === "error") ?
+                                        <Alert intent="danger"
+                                            title="Error Display Data"
+                                        >
+                                            Error displaying data
+                                        </Alert> :
+                                        <>LOADING...</>
                     }
                 </Pane> : <Alert intent="danger"
                     title="Error Display Data"

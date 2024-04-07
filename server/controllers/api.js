@@ -140,7 +140,7 @@ router.get('/nft/wallet/:net/:address/page', async (req, res) => {
         let options = {
             pageKey: pgKey,
             excludeFilters: [NftFilters.SPAM],
-            pageSize: 50
+            pageSize: 30
         }
 
         try {
@@ -153,7 +153,10 @@ router.get('/nft/wallet/:net/:address/page', async (req, res) => {
             return {
                 [net]: {
                     okNfts,
-                    "pageKey": okNfts.pageKey
+                    "totalCount": okNfts.totalCount,
+                    "pageKey": okNfts.pageKey || "end of page",
+                    "validAt": okNfts.validAt,
+                    "walletAdd": address
                 }
             };
         } catch (err) {
@@ -223,7 +226,7 @@ router.get('/nft/wallet/:address', async (req, res) => {
         // console.log(config);
         let options = {
             excludeFilters: [NftFilters.SPAM],
-            pageSize: 50
+            pageSize: 30
         }
         try {
             const nfts = await alchemy.nft.getNftsForOwner(address, options);
@@ -238,7 +241,8 @@ router.get('/nft/wallet/:address', async (req, res) => {
                     okNfts,
                     "totalCount": nfts.totalCount,
                     "pageKey": nfts.pageKey,
-                    "validAt": nfts.validAt
+                    "validAt": nfts.validAt,
+                    "walletAdd": address
                 }
             };
         } catch (err) {
@@ -266,7 +270,7 @@ router.get('/nft/wallet/:address', async (req, res) => {
 
 
 //get NFT given contract address or slug name
-router.get('/nft/collection/:net', async (req, res) => {
+router.get('/nft/collection/:net/', async (req, res) => {
     console.log('==============/NFT/collection==============')
     console.log(` network selcted: ${req.params.net}  `)
 
@@ -275,6 +279,7 @@ router.get('/nft/collection/:net', async (req, res) => {
 
     const input = {
         contractAdd: req.query.contractAdd,
+        pageKey: req.query.pageKey,
         slug: req.query.slug
     }
     console.log(input)
@@ -289,28 +294,30 @@ router.get('/nft/collection/:net', async (req, res) => {
         //     `collectionSlug=${input.slug}`;
 
         let finalInput = `contractAddress=${input.contractAdd}`;
+        let pgKey = input.pageKey ? `&startToken=${input.pageKey}` : ''
 
         //sdk doesn't support slug name? using axios to fetch the collection endpoint which support slug names
         const options = {
             method: 'GET',
             url: `https://${config.network}.g.alchemy.com/nft/v3/${Key}/getNFTsForContract?` +
-                `${finalInput}` + `&withMetadata=true`,
+                `${finalInput}` + `&withMetadata=true` + `${pgKey}&limit=30`,
             headers: { accept: 'application/json' }
         };
 
         try {
             console.log('url', options.url)
             const nfts = await axios.request(options);
-            console.log(nfts)
+            // console.log(nfts.data.nfts[0].image)
             console.log(`completed ${net}`)
             console.log(`got item in Collection - ${finalInput}, ${nfts.data.nfts.length}`)
             const okNfts = nfts.data.nfts.filter(nft => {
-                return (nft.image && typeof nft.image.originalUrl) === 'string' && nft.image.originalUrl.startsWith('http');
+                return nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
             });
+            // console.log(okNfts)
             return {
                 [net]: {
                     okNfts,
-                    pgKey: nfts.data.pageKey
+                    pageKey: nfts.data.pageKey
                 }
             }
         } catch (err) {

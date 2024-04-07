@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Card, Tooltip,
+    Pane, Card, Tooltip,
 } from 'evergreen-ui';
 import { useSearch } from '../cont/searchContex';
 
 
 function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
-    const { setSearchParams, resetSearchParams } = useSearch();
+    const { updateSearchParams } = useSearch();
     const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
     useEffect(() => {
         setCurrentImageUrl(imageUrl); // This will trigger a re-render when imageUrl prop changes
@@ -16,17 +16,22 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
     };
 
     const handleClick = (contractAdd, net, id) => {
-        resetSearchParams();
-        setSearchParams("network", net);
-        setSearchParams("contractAdd", contractAdd)
-        setSearchParams("tokenId", id)
+        console.log(id)
+        updateSearchParams({
+            "walletAdd": '',
+            "collectionAdd": '',
+            "contractAdd": contractAdd,
+            "network": net,
+            "tokenId": id,
+            "pageKey": '',
+            "prevKeys": []
+        });
     };
 
 
     return (
+
         <Tooltip content={name}>
-
-
             <Card
                 elevation={3}
                 width={200}
@@ -37,17 +42,18 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
                 alignItems="center"
                 flexDirection="column"
                 position="relative"
-                overflow="hidden"
                 backgroundSize="cover"
                 onClick={() => handleClick(contractAdd, net, id)}
             >
-                <img
-                    src={currentImageUrl}
-                    alt={name}
-                    style={{ width: '100%', height: 'auto' }}
-                    onError={handleImageError} />
+                <Pane width={200} height={200} overflow="hidden">
+                    <img
+                        src={currentImageUrl}
+                        alt={name}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={handleImageError} />
+                </Pane>
             </Card>
-        </Tooltip>
+        </Tooltip >
     );
 }
 
