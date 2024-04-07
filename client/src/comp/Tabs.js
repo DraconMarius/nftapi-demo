@@ -53,15 +53,16 @@ function Tabs({ apiRes, type }) {
     };
     const [displayType, setType] = useState("wallet")
     useEffect(() => {
+        console.log(type)
         setType(type)
 
-    }, [[type]])
+    }, [type])
 
 
     return (
         <Pane display="flex" width="auto">
             {/* if type is wallet */}
-            {(apiRes && (displayType === "wallet")) ? (
+            {(apiRes && ((type === "wallet") || (type === "walletP"))) ? (
                 <Pane display="flex" width="100%" flexDirection="column">
                     {networks.map((network, index) => (
                         <Pane
@@ -118,14 +119,14 @@ function Tabs({ apiRes, type }) {
                                     <Pane display="flex" justifyContent="space-between" alignItems="center" padding={8}>
                                         <Button
                                             iconBefore={CircleArrowLeftIcon}
-                                            onClick={() => handlePageChange(network, true)}
+                                            onClick={() => handlePageChange(network, false)}
                                             disabled={isFirstPage} // Disable the button on the first page
                                         >
                                             Prev
                                         </Button>
                                         <Button
                                             iconBefore={CircleArrowRightIcon}
-                                            onClick={() => handlePageChange(network, false)}
+                                            onClick={() => handlePageChange(network, true)}
                                             disabled={isLastPage(network)} // Disable the button on the last page
                                         >
                                             Next
@@ -156,13 +157,13 @@ function Tabs({ apiRes, type }) {
                                 </Pane>
                             ))}
                         </Pane>
-                    </Pane></Pane>) : (apiRes && (type === "collection")) ?
+                    </Pane></Pane>) : (apiRes && ((type === "collection") || (type === "collectionP"))) ?
 
                 (
                     <Pane display="flex" width="100%" flexDirection="column">
                         {networks.map((network, index) => (
                             <Metadata
-                                key={network}
+                                key={index}
                                 type={"col"}
                                 net={network}
                                 name={apiRes[network]?.okNfts[0]?.collection?.name || apiRes[network]?.contract?.name || apiRes[network]?.raw?.name}
@@ -204,14 +205,14 @@ function Tabs({ apiRes, type }) {
                                         <Pane display="flex" justifyContent="space-between" padding={16}>
                                             <Button
                                                 iconBefore={CircleArrowLeftIcon}
-                                                onClick={() => handlePageChange(network, true)}
+                                                onClick={() => handlePageChange(network, false)}
                                                 disabled={isFirstPage} // Disable the button on the first page
                                             >
                                                 Prev
                                             </Button>
                                             <Button
                                                 iconBefore={CircleArrowRightIcon}
-                                                onClick={() => handlePageChange(network, false)}
+                                                onClick={() => handlePageChange(network, true)}
                                                 disabled={isLastPage(network)} // Disable the button on the last page
                                             >
                                                 Next

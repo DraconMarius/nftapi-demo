@@ -72,9 +72,9 @@ function Nav() {
     }
 
 
-    useEffect(() => {
-        console.log(searchParams);
-    }, [searchParams]);
+    // useEffect(() => {
+    //     console.log(searchParams);
+    // }, [searchParams]);
 
     // useEffect(() => {
     //     console.log(net);

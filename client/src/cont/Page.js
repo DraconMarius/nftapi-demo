@@ -5,7 +5,7 @@ import Tabs from '../comp/Tabs'
 
 function Page({ apiRes, type }) {
 
-
+    console.log(type)
 
     return (
         <>

@@ -7,7 +7,7 @@ import {
 
 import Collections from './Collections';
 import Wallet from './Wallet';
-import Page from './Page'
+import Tabs from '../comp/Tabs'
 import NFT from '../comp/NFT';
 
 function Display({ apiRes, type }) {
@@ -17,6 +17,7 @@ function Display({ apiRes, type }) {
         if (!apiRes || !type) {
             setType('error');
         } else {
+            console.log('display', type)
             setType(type)
         }
     }, [apiRes, type]);
@@ -31,15 +32,17 @@ function Display({ apiRes, type }) {
                             <Collections apiRes={apiRes} type={type} /> :
                             (displayType === "NFT") ?
                                 <NFT apiRes={apiRes} type={type} /> :
-                                (displayType === "page") ?
-                                    <Page apiRes={apiRes} type={type} /> :
-                                    (displayType === "error") ?
-                                        <Alert intent="danger"
-                                            title="Error Display Data"
-                                        >
-                                            Error displaying data
-                                        </Alert> :
-                                        <>LOADING...</>
+                                (displayType === "collectionP") ?
+                                    <Tabs apiRes={apiRes} type={type} /> :
+                                    (displayType === "walletP") ?
+                                        <Tabs apiRes={apiRes} type={type} /> :
+                                        (displayType === "error") ?
+                                            <Alert intent="danger"
+                                                title="Error Display Data"
+                                            >
+                                                Error displaying data
+                                            </Alert> :
+                                            <>LOADING...</>
                     }
                 </Pane> : <Alert intent="danger"
                     title="Error Display Data"

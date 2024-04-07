@@ -37,13 +37,15 @@ function Search() {
 
     const determineFetchType = (params) => {
         // Check for specific combinations of parameters
-        if (params.walletAdd && !params.collectionAdd && !params.tokenId) {
+        if (params.walletAdd && !params.collectionAdd && !params.tokenId && !(params.pageKey || params.prevKeys[0])) {
             return 'walletAdd';
-        } else if (params.collectionAdd && params.network && !params.tokenId) {
+        } else if (params.collectionAdd && params.network && !params.tokenId &&
+            !(params.pageKey || params.prevKeys[0])) {
             return 'collection';
         } else if (params.tokenId && params.network && params.contractAdd) {
             return 'NFT';
-        } else if (params.network && params.walletAdd && params.pageKey) {
+        } else if ((params.network && params.walletAdd && (params.pageKey || params.prevKeys[0])) ||
+            (params.network && params.collectionAdd && params.pageKey || params.prevKeys[0])) {
             return 'page';
         }
         // Add more conditions as needed for different fetch scenarios
@@ -72,8 +74,17 @@ function Search() {
                     setType(data ? 'NFT' : 'error');
                     break;
                 case 'page':
-                    data = await getNFTsPage(searchParams.network, searchParams.walletAdd, searchParams.pageKey);
-                    setType(data ? 'page' : 'error');
+                    const pageType = searchParams.collectionAdd ? "collectionP" : "walletP"
+                    console.log("page hit", pageType)
+
+                    if (pageType === "walletP") {
+
+                        data = await getNFTsPage(searchParams.network, searchParams.walletAdd, searchParams.pageKey);
+                    }
+                    if (pageType === "collectionP") {
+                        data = await getNFTsCollection(searchParams.network, searchParams.collectionAdd, searchParams.pageKey)
+                    }
+                    setType(await data ? pageType : 'error');
                     break;
                 default:
                     setType('default');
@@ -91,6 +102,7 @@ function Search() {
     // const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
     useEffect(() => {
+        console.log(searchParams)
         //fetch everytime search provider param is changed
         //change based on searchParams availability
         const fetchData = async () => {
