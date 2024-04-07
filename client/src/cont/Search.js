@@ -113,21 +113,18 @@ function Search() {
         //     setType(type)
         // }
     }, [apiRes, type])
-    const overflow = {
-        overflow: 'wrap',
-    }
 
 
 
     return (
-        <>
-            <Pane style={overflow}>
+        <Pane>
+            <Pane>
                 <Overlay isShown={loading}>
-                    <Spinner marginX="auto" marginY={120} />
+                    <Spinner marginX="auto" marginY={450} />
                 </Overlay>
             </Pane >
             {((type === "default") && (loading === false) && !apiRes) ?
-                <Pane display="flex"
+                <Pane 
                     justifyContent="center" alignItems="center" marginTop={16}>
                     <Pane display="flex" flexDirection="column">
                         <Typewriter options={{
@@ -161,7 +158,7 @@ function Search() {
                             </Alert>
                         </Pane>
             }
-        </>
+        </Pane>
     );
 }
 

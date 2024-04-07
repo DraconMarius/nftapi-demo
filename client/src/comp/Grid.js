@@ -6,7 +6,7 @@ import { useSearch } from '../cont/searchContex';
 
 
 function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
-    const { setSearchParams, resetSearchParams } = useSearch();
+    const { updateSearchParams } = useSearch();
     const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
     useEffect(() => {
         setCurrentImageUrl(imageUrl); // This will trigger a re-render when imageUrl prop changes
@@ -17,19 +17,20 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
 
     const handleClick = (contractAdd, net, id) => {
         console.log(id)
-        setSearchParams({
+        updateSearchParams({
             "walletAdd": '',
+            "collectionAdd": '',
             "contractAdd": contractAdd,
             "network": net,
-            "tokenId": id
+            "tokenId": id,
+            "pageKey": '',
+            "prevKeys": []
         });
     };
 
 
     return (
         <Tooltip content={name}>
-
-
             <Card
                 elevation={3}
                 width={200}

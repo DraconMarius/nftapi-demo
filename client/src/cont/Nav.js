@@ -33,7 +33,7 @@ function Nav() {
     const [NetOp, setNetOp] = useState(false)
     const [id, setId] = useState('')
     const [idOp, setIdOp] = useState(false)
-    const { searchParams, setSearchParams, resetSearchParams } = useSearch();
+    const { searchParams, updateSearchParams } = useSearch();
 
     const blankState = {
         network: '',
@@ -42,7 +42,7 @@ function Nav() {
         contractAdd: '',
         tokenId: '',
         pageKey: '',
-        prevKey: []
+        prevKeys: []
     }
     const handleChange = (type, string) => {
         // Update based on type and input
@@ -51,7 +51,7 @@ function Nav() {
             ...blankState,
             [type]: string
         }
-        setSearchParams(search);
+        updateSearchParams(search);
     }
 
     const handleChangeWithNet = (type, string, net) => {
@@ -60,7 +60,7 @@ function Nav() {
             [type]: string,
             "network": net
         }
-        setSearchParams(search);
+        updateSearchParams(search);
     }
 
     const handleChangeWithId = (type, string, net, id) => {
@@ -70,7 +70,7 @@ function Nav() {
             "network": net,
             "tokenId": id
         }
-        setSearchParams(search);
+        updateSearchParams(search);
     }
 
 
@@ -80,7 +80,7 @@ function Nav() {
 
     // useEffect(() => {
     //     console.log(net);
-    //     setSearchParams("network", net)
+    //     updateSearchParams("network", net)
     // }, [net])
 
     useEffect(() => {

@@ -24,7 +24,7 @@ function Display({ apiRes, type }) {
 
         <>
             {apiRes ?
-                <Pane>
+                <Pane >
                     {(displayType === "wallet") ?
                         <Wallet apiRes={apiRes} type={type} /> :
                         (displayType === "collection") ?

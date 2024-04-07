@@ -12,7 +12,7 @@ function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCoun
     // console.log(openSeaExtra)
 
     return (
-        <Pane>
+        <Pane flex={1}>
             <Marquee>
                 <Badge color='neutral'>Network:</Badge>
                 <Badge color='purple' marginRight={16}>{net}</Badge>

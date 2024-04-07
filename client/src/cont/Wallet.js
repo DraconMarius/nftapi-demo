@@ -8,9 +8,9 @@ function Wallet({ apiRes, type }) {
 
 
     return (
-        <>
+
             <Tabs apiRes={apiRes} type={type} />
-        </>
+
     )
 }
 

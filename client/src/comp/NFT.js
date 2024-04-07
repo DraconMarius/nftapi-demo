@@ -17,13 +17,16 @@ function Nft({ apiRes }) {
     const network = Object.keys(apiRes)[0];
     console.log(network)
 
-    const { setSearchParams } = useSearch();
+    const { updateSearchParams } = useSearch();
     const handleCollection = (collectionAdd, net) => {
-        setSearchParams({
+        updateSearchParams({
             "walletAdd": '',
+            "contractAdd": '',
             "collectionAdd": collectionAdd,
             "network": net,
-            "tokeId": ''
+            "tokenId": '',
+            "pageKey": '',
+            "prevKeys": []
         });
     };
 
@@ -32,10 +35,12 @@ function Nft({ apiRes }) {
         console.log(id)
         const nextId = parseInt(id) + 1
         console.log(nextId)
-        setSearchParams({
+        updateSearchParams({
             "contractAdd": contractAdd,
             "network": net,
-            "tokenId": nextId
+            "tokenId": nextId,
+            "pageKey": '',
+            "prevKeys": []
         });
     };
 
@@ -44,7 +49,7 @@ function Nft({ apiRes }) {
         console.log(id)
         const prevId = parseInt(id) - 1
         console.log(prevId)
-        setSearchParams({
+        updateSearchParams({
             "contractAdd": contractAdd,
             "network": net,
             "tokenId": prevId

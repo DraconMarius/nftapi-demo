@@ -5,6 +5,8 @@ import {
     Tab,
     Button, CircleArrowRightIcon,
     CircleArrowLeftIcon,
+    Badge,
+    Pill
 } from 'evergreen-ui';
 
 import Grid from './Grid';
@@ -12,62 +14,51 @@ import Metadata from "./Metadata"
 import { useSearch } from '../cont/searchContex';
 
 function Tabs({ apiRes, type }) {
-    // console.log(type)
+    console.log(apiRes)
     //now storing prev/page Key in contex
-    const { searchParams, setSearchParams } = useSearch();
-    const [lastPage, setLastPage] = useState(false);
-    const [firstPage, setFirstPage] = useState(true);
-
-    //conditionally render chunk based on the response from server
-    const [displayType, setType] = useState("wallet")
-    useEffect(() => {
-        // console.log(apiRes.Eth.totalCount)
-        console.log(type)
-        setType(type)
-
-    }, [apiRes, type])
-
-    useEffect(() => {
-        //has pageKey?
-        setLastPage(!apiRes[searchParams.network]?.pageKey);
-        setFirstPage(!searchParams?.prevKey[0])
-        // Similarly, you might set `firstPage` based on some condition, e.g., presence of `prevKey`, if applicable
-    }, [apiRes, searchParams.network]);
-
-    const handleNextPg = (network, pageKey, address) => {
-        if (pageKey) {
-            setSearchParams({
-                network: network,
-                walletAdd: address,
-                pageKey: pageKey,
-            });
-        }
-    };
-
-    const handlePrevPage = (network, address) => {
-        const { prevKeys } = searchParams;
-        if (prevKeys.length > 0) {
-            const prevPageKey = prevKeys[prevKeys.length - 1];
-            setSearchParams({
-                network: network,
-                walletAdd: address,
-                prevKey: prevPageKey,
-            });
-        } else {
-            setSearchParams({
-                walletAdd: address
-            })
-        };
-    };
-
-    // console.log("eth:", apiRes.Eth.nfts.totalCount)
+    const { searchParams, updateSearchParams } = useSearch();
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const networks = Object.keys(apiRes);
-    // console.log(networks)
-    // console.log(apiRes.Eth.nfts.length)
+    // Calculate firstPage and lastPage based on current apiRes and searchParams
+    const isFirstPage = (searchParams.prevKeys && (searchParams.prevKeys.length === 0));
+    const isLastPage = network => !apiRes[network]?.pageKey;
+
+    const handlePageChange = (network, isNext) => {
+        console.log(isNext, "isNext?")
+        console.log(network, "network")
+        if (isNext) {
+            // Move to the next page
+            const nextPageKey = apiRes[network]?.pageKey;
+            console.log("test page Key", nextPageKey)
+            if (nextPageKey) {
+                console.log('next')
+                updateSearchParams({
+                    ...searchParams,
+                    "network": network,
+                    "pageKey": `${nextPageKey}`,
+                    isPrevPage: false,
+                });
+            }
+        } else {
+            console.log("prev")
+            // Move to the previous page
+            updateSearchParams({
+                ...searchParams,
+                "network": network,
+                isPrevPage: true,
+            });
+        }
+    };
+    const [displayType, setType] = useState("wallet")
+    useEffect(() => {
+        setType(type)
+
+    }, [[type]])
+
+
     return (
-        <Pane display="flex" width="100%">
+        <Pane display="flex" width="auto">
             {/* if type is wallet */}
             {(apiRes && (displayType === "wallet")) ? (
                 <Pane display="flex" width="100%">
@@ -79,36 +70,46 @@ function Tabs({ apiRes, type }) {
                                 onSelect={() => setSelectedIndex(index)}
                                 isSelected={index === selectedIndex}
                                 aria-controls={`panel-${network}`}
+                                marginBottom={8}
+                                marginTop={8}
+                                direction="vertical"
                             >
-                                {network} ({apiRes[network].totalCount || " null "})
+                                <Pane display="flex" >
+
+                                    <Badge color='blue'>{network}</Badge>
+                                    <Pill color="yellow">
+                                        ({apiRes[network].totalCount || " null "})
+                                    </Pill>
+                                </Pane>
                             </Tab>
                         ))}
                     </Tablist>
-                    <Pane padding={8} flex="1">
+                    <Pane >
                         {networks.map((network, index) => (
 
                             <Pane
+
                                 key={network}
                                 id={`panel-${network}`}
                                 role="tabpanel"
 
                                 aria-labelledby={network}
                                 aria-hidden={index !== selectedIndex}
-                                display={index === selectedIndex ? 'grid' : 'none'}
+                                display={index === selectedIndex ? 'block' : 'none'}
 
                             >
                                 <Pane display="flex" justifyContent="space-between" padding={16}>
                                     <Button
                                         iconBefore={CircleArrowLeftIcon}
-                                        onClick={() => handlePrevPage()}
-                                        disabled={firstPage} // Disable the button on the first page
+                                        onClick={() => handlePageChange(network, true)}
+                                        disabled={isFirstPage} // Disable the button on the first page
                                     >
                                         Prev
                                     </Button>
                                     <Button
                                         iconBefore={CircleArrowRightIcon}
-                                        onClick={() => handleNextPage()}
-                                        disabled={lastPage} // Disable the button on the last page
+                                        onClick={() => handlePageChange(network, false)}
+                                        disabled={isLastPage(network)} // Disable the button on the last page
                                     >
                                         Next
                                     </Button>
@@ -119,9 +120,8 @@ function Tabs({ apiRes, type }) {
                                     validAt={apiRes[network]?.validAt}
                                     totalCount={apiRes[network]?.totalCount}
                                 />
-                                <Pane flex="1" justifyContent="center" display="grid"
-                                    gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
-                                    padding={8}
+                                <Pane display="grid" maxWidth="auto"
+                                    gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))"
                                 >
 
                                     {apiRes[network]?.okNfts?.map((item, itemIndex) => {
@@ -155,7 +155,12 @@ function Tabs({ apiRes, type }) {
                                     isSelected={index === selectedIndex}
                                     aria-controls={`panel-${network}`}
                                 >
-                                    {network} ({apiRes[network]?.okNfts[0]?.contract?.symbol})
+                                    <Pane display="flex" >
+                                        <Badge color='purple'>{network}</Badge>
+                                        <Pill color="teal">
+                                            ({apiRes[network]?.okNfts[0]?.contract?.symbol})
+                                        </Pill>
+                                    </Pane>
                                 </Tab>
                             ))}
                         </Tablist>
@@ -169,6 +174,22 @@ function Tabs({ apiRes, type }) {
                                     aria-hidden={index !== selectedIndex}
                                     display={index === selectedIndex ? 'grid' : 'none'}
                                 >
+                                    <Pane display="flex" justifyContent="space-between" padding={16}>
+                                        <Button
+                                            iconBefore={CircleArrowLeftIcon}
+                                            onClick={() => handlePageChange(network, true)}
+                                            disabled={isFirstPage} // Disable the button on the first page
+                                        >
+                                            Prev
+                                        </Button>
+                                        <Button
+                                            iconBefore={CircleArrowRightIcon}
+                                            onClick={() => handlePageChange(network, false)}
+                                            disabled={isLastPage(network)} // Disable the button on the last page
+                                        >
+                                            Next
+                                        </Button>
+                                    </Pane>
                                     <Metadata
 
                                         type={"col"}
@@ -196,9 +217,9 @@ function Tabs({ apiRes, type }) {
                                 </Pane>
                             ))}
                         </Pane>
-                    </Pane>) : <Pane />
+                    </Pane >) : <Pane />
             }
-        </Pane>
+        </Pane >
     );
 }
 
