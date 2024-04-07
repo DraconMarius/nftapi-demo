@@ -25,6 +25,8 @@ function Tabs({ apiRes, type }) {
     const isFirstPage = (searchParams.prevKeys && (searchParams.prevKeys.length === 0));
     const isLastPage = network => !apiRes[network]?.pageKey;
 
+    console.log(`first page:${isFirstPage}, last page:${() => { isLastPage("Eth") }}`)
+
     const handlePageChange = (network, isNext) => {
         console.log(isNext, "isNext?")
         console.log(network, "network")
@@ -38,6 +40,7 @@ function Tabs({ apiRes, type }) {
                     ...searchParams,
                     "network": network,
                     "pageKey": `${nextPageKey}`,
+                    "prevKeys": [nextPageKey],
                     isPrevPage: false,
                 });
             }
@@ -51,12 +54,6 @@ function Tabs({ apiRes, type }) {
             });
         }
     };
-    const [displayType, setType] = useState("wallet")
-    useEffect(() => {
-        console.log(type)
-        setType(type)
-
-    }, [type])
 
 
     return (
@@ -73,6 +70,7 @@ function Tabs({ apiRes, type }) {
                         >
                             <Metadata
                                 type={"wal"}
+                                walletAdd={apiRes[network]?.walletAdd}
                                 net={network}
                                 validAt={apiRes[network]?.validAt}
                                 totalCount={apiRes[network]?.totalCount}
@@ -186,7 +184,7 @@ function Tabs({ apiRes, type }) {
                                         <Pane display="flex" >
                                             <Badge color='purple'>{network}</Badge>
                                             <Pill color="teal">
-                                                ({apiRes[network]?.okNfts[0]?.contract?.symbol})
+                                                {apiRes[network]?.okNfts[0]?.contract?.symbol}
                                             </Pill>
                                         </Pane>
                                     </Tab>

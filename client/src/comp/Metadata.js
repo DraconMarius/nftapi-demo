@@ -7,9 +7,10 @@ import {
 
 import Marquee from "react-fast-marquee"
 
-function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCount }) {
+function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCount, walletAdd }) {
     const openSeaExtra = openSeaMetadata ? Object.entries(openSeaMetadata) : null
     // console.log(openSeaExtra)
+    console.log(walletAdd)
 
 
     return (
@@ -25,9 +26,11 @@ function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCoun
 
                 {type === "wal" && (
                     <>
-                        <Badge color='blue'>Total Count:</Badge>
+                        <Badge colo='green'>walletAddress:</Badge>
+                        <Pill color='orange' marginRight={16}>{walletAdd}</Pill>
+                        <Badge color='blue'>totalCount:</Badge>
                         <Pill color="yellow" marginRight={16}>{totalCount}</Pill>
-                        <Badge color="teal">Valid At: blockHash</Badge>
+                        <Badge color="teal">blockHash:</Badge>
                         <Pill color="red" marginRight={16}>{validAt?.blockHash || null}</Pill>
                     </>
                 )}
@@ -39,7 +42,7 @@ function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCoun
                         <Pill color='yellow' marginRight={16}>{symbol}</Pill>
 
                         {openSeaExtra && openSeaExtra.map(([key, val], index) => (
-                            <React.Fragment key={key} >
+                            <React.Fragment key={index} >
                                 <Badge color='teal'>{key}:</Badge>
                                 <Pill color='red' marginRight={16}>{val || 'N/A'}</Pill>
                             </React.Fragment>

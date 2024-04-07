@@ -15,16 +15,18 @@ export const SearchProvider = ({ children }) => {
 
     const updateSearchParams = (newParams) => {
         setSearchParams((prev) => {
-            const updatedPrevKeys = newParams.pageKey && !newParams.isPrevPage
+            const updatedPrevKeys = (newParams.pageKey && !newParams.isPrevPage)
                 ? [...prev.prevKeys, prev.pageKey].filter(Boolean)
                 : prev.prevKeys;
+
+            console.log(updatedPrevKeys)
 
             if (newParams.isPrevPage) {
                 const prevPageKey = updatedPrevKeys.pop() || '';
                 return { ...prev, pageKey: prevPageKey, prevKeys: updatedPrevKeys };
             }
 
-            return { ...prev, ...newParams, prevKeys: updatedPrevKeys };
+            return { ...prev, ...newParams };
         });
     };
 

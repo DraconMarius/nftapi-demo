@@ -4,10 +4,10 @@
   ###### Check out the badges hosted by [shields.io](https://shields.io/)
 
   #### Known bugs/todo:
-- [ ] nav bar to burger with viewport
-- [ ] previous page 
-- [ ] potentially adding wallet token metadata
-- [ ] onboarding flow, tour
+  - [ ] nav bar to burger with viewport
+  - [ ] previous page 
+  - [ ] potentially adding wallet token metadata
+  - [ ] onboarding flow, tour
   
   ## Description
   *A GUI demo-ing the capability of Alchemy's NFT API SDK and endpoints*
@@ -71,16 +71,16 @@
 
   ***
   ## Author
-*Mari Ma*
+  *Mari Ma*
 
-[<img src="https://res.cloudinary.com/dbjhly3lm/image/upload//h_50/v1682488301/personal%20assets/logo_github_icon_143196_phgakv.png" alt='github' >](https://github.com/DraconMarius)
-[<img src="https://res.cloudinary.com/dbjhly3lm/image/upload/h_50/v1682488301/personal%20assets/logo_linkedin_icon_143191_nv9tim.png" alt='linkedin'>](https://www.linkedin.com/in/mari-ma-70771585/)
+  [<img src="https://res.cloudinary.com/dbjhly3lm/image/upload//h_50/v1682488301/personal%20assets/logo_github_icon_143196_phgakv.png" alt='github' >](https://github.com/DraconMarius)
+  [<img src="https://res.cloudinary.com/dbjhly3lm/image/upload/h_50/v1682488301/personal%20assets/logo_linkedin_icon_143191_nv9tim.png" alt='linkedin'>](https://www.linkedin.com/in/mari-ma-70771585/)
 
 [Icon credit @ Anton Kalashnyk](https://icon-icons.com/users/14quJ7FM9cYdQZHidnZoM/icon-sets/)
 
   ***
   ## Questions
-    For any questions, please reach out directly or by creating an issue.
+  For any questions, please reach out directly or by creating an issue.
 
 
   
