@@ -35,6 +35,7 @@ function Nft({ apiRes }) {
         console.log(id)
         const nextId = parseInt(id) + 1
         console.log(nextId)
+
         updateSearchParams({
             "contractAdd": contractAdd,
             "network": net,
@@ -42,6 +43,7 @@ function Nft({ apiRes }) {
             "pageKey": '',
             "prevKeys": []
         });
+
     };
 
     const handlePrev = (contractAdd, net, id) => {
