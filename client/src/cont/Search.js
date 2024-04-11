@@ -45,7 +45,7 @@ function Search() {
         } else if (params.tokenId && params.network && params.contractAdd) {
             return 'NFT';
         } else if ((params.network && params.walletAdd && (params.pageKey || params.prevKeys[0])) ||
-            (params.network && params.collectionAdd && params.pageKey || params.prevKeys[0])) {
+            (params.network && params.collectionAdd && (params.pageKey || params.prevKeys[0]))) {
             return 'page';
         }
         // Add more conditions as needed for different fetch scenarios
@@ -53,60 +53,60 @@ function Search() {
         return 'default'; // Default fetchType if none of the above conditions are met
     }
 
-    const fetchServer = async (searchParams) => {
-        try {
-            let data;
-            let fetchType = determineFetchType(searchParams);
-
-            console.log('Fetch Type:', fetchType); // Debug the fetchType value
-
-            switch (fetchType) {
-                case 'walletAdd':
-                    data = await getNFTsForOwner(searchParams.walletAdd);
-                    setType(data ? 'wallet' : 'error');
-                    break;
-                case 'collection':
-                    data = await getNFTsCollection(searchParams.network, searchParams.collectionAdd);
-                    setType(data ? 'collection' : 'error');
-                    break;
-                case 'NFT':
-                    data = await getNFT(searchParams.network, searchParams.tokenId, searchParams.contractAdd);
-                    setType(data ? 'NFT' : 'error');
-                    break;
-                case 'page':
-                    const pageType = searchParams.collectionAdd ? "collectionP" : "walletP"
-                    console.log("page hit", pageType)
-
-                    if (pageType === "walletP") {
-
-                        data = await getNFTsPage(searchParams.network, searchParams.walletAdd, searchParams.pageKey);
-                    }
-                    if (pageType === "collectionP") {
-                        data = await getNFTsCollection(searchParams.network, searchParams.collectionAdd, searchParams.pageKey)
-                    }
-                    setType(await data ? pageType : 'error');
-                    break;
-                default:
-                    setType('default');
-            }
-
-            return data;
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setType('error');
-            return null;
-        }
-    };
-
 
     // const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
     useEffect(() => {
         console.log(searchParams)
+        const fetchServer = async (searchParams) => {
+            try {
+                let data;
+                let fetchType = determineFetchType(searchParams);
+    
+                console.log('Fetch Type:', fetchType); // Debug the fetchType value
+    
+                switch (fetchType) {
+                    case 'walletAdd':
+                        data = await getNFTsForOwner(searchParams.walletAdd);
+                        setType(data ? 'wallet' : 'error');
+                        break;
+                    case 'collection':
+                        data = await getNFTsCollection(searchParams.network, searchParams.collectionAdd);
+                        setType(data ? 'collection' : 'error');
+                        break;
+                    case 'NFT':
+                        data = await getNFT(searchParams.network, searchParams.tokenId, searchParams.contractAdd);
+                        setType(data ? 'NFT' : 'error');
+                        break;
+                    case 'page':
+                        const pageType = searchParams.collectionAdd ? "collectionP" : "walletP"
+                        console.log("page hit", pageType)
+    
+                        if (pageType === "walletP") {
+    
+                            data = await getNFTsPage(searchParams.network, searchParams.walletAdd, searchParams.pageKey);
+                        }
+                        if (pageType === "collectionP") {
+                            data = await getNFTsCollection(searchParams.network, searchParams.collectionAdd, searchParams.pageKey)
+                        }
+                        setType(await data ? pageType : 'error');
+                        break;
+                    default:
+                        setType('default');
+                }
+    
+                return data;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                setType('error');
+                return null;
+            }
+        };
         //fetch everytime search provider param is changed
         //change based on searchParams availability
         const fetchData = async () => {
             setLoading(true)
+
             const data = await fetchServer(searchParams);
             setApiRes(data); // Set the resolved data
             setLoading(false);

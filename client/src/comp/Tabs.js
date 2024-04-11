@@ -22,11 +22,12 @@ function Tabs({ apiRes, type }) {
 
     const networks = Object.keys(apiRes);
     // Calculate firstPage and lastPage based on current apiRes and searchParams
-    const isFirstPage = (searchParams.prevKeys && (searchParams.prevKeys.length === 0));
+    const isFirstPage = (searchParams.prevKeys && (searchParams.prevKeys.length === 0) && !searchParams.currentKey);
     const isLastPage = network => !apiRes[network]?.pageKey;
 
-    console.log(`first page:${isFirstPage}, last page:${() => { isLastPage("Eth") }}`)
+    console.log(`first page:${isFirstPage}, last page:${isLastPage("Eth")}`)
 
+    //TODO: if needed, update searchParmas pageKeys to be an object for more complicated search later
     const handlePageChange = (network, isNext) => {
         console.log(isNext, "isNext?")
         console.log(network, "network")
@@ -34,24 +35,29 @@ function Tabs({ apiRes, type }) {
             // Move to the next page
             const nextPageKey = apiRes[network]?.pageKey;
             console.log("test page Key", nextPageKey)
+            //if going to 2nd page, no prev key, nor current key
             if (nextPageKey) {
-                console.log('next')
+                console.log('going to 2nd page')
                 updateSearchParams({
                     ...searchParams,
                     "network": network,
                     "pageKey": `${nextPageKey}`,
-                    "prevKeys": [nextPageKey],
+                    "currentKey": nextPageKey,
                     isPrevPage: false,
                 });
+                //
             }
         } else {
             console.log("prev")
             // Move to the previous page
+
             updateSearchParams({
                 ...searchParams,
                 "network": network,
-                isPrevPage: true,
-            });
+                isPrevPage: true
+            })
+
+
         }
     };
 

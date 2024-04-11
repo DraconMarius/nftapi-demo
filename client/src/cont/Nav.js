@@ -8,16 +8,9 @@ import { useSearch } from './searchContex'
 import {
     Pane,
     Select,
-    SearchInput,
     TextInput,
     SearchIcon,
-    Button,
-    Overlay,
-    Spinner,
-    Position,
-    Paragraph,
-    Group,
-    IconButton
+    Button
 } from 'evergreen-ui';
 
 
@@ -40,7 +33,8 @@ function Nav() {
         contractAdd: '',
         tokenId: '',
         pageKey: '',
-        prevKeys: []
+        prevKeys: [],
+        currentKey: ''
     }
     const handleChange = (type, string) => {
         // Update based on type and input

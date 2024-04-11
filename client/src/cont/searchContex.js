@@ -11,6 +11,7 @@ export const SearchProvider = ({ children }) => {
         tokenId: '',
         pageKey: '',
         prevKeys: [],
+        currentKey: ''
     });
 
     const updateSearchParams = (newParams) => {
@@ -23,10 +24,10 @@ export const SearchProvider = ({ children }) => {
 
             if (newParams.isPrevPage) {
                 const prevPageKey = updatedPrevKeys.pop() || '';
-                return { ...prev, pageKey: prevPageKey, prevKeys: updatedPrevKeys };
+                return { ...prev, pageKey: prevPageKey, prevKeys: updatedPrevKeys, currentKey: prevPageKey };
             }
 
-            return { ...prev, ...newParams };
+            return { ...prev, ...newParams, prevKeys: updatedPrevKeys };
         });
     };
 
@@ -38,6 +39,7 @@ export const SearchProvider = ({ children }) => {
         tokenId: '',
         pageKey: '',
         prevKeys: [],
+        currentKey: '',
     });
 
     return (

@@ -101,7 +101,7 @@ router.get('/nft/wallet/:net/:address/page', async (req, res) => {
     console.log('==============/NFT/page==============')
     const address = req.params.address
     const net = req.params.net
-    const pgKey = req.query.pgKey
+    const pgKey = req.query.pgKey || null
     console.log(pgKey)
     const config = configs[net]
 

@@ -9,13 +9,18 @@ import {
     Table,
     CircleArrowRightIcon,
     CircleArrowLeftIcon,
-    Button
+    Button,
+    SearchIcon
 } from 'evergreen-ui';
 
+import etherscan from '../assets/etherscan-logo.png'
+
 function Nft({ apiRes }) {
-    console.log("test", apiRes)
+    // console.log("test", apiRes)
     const network = Object.keys(apiRes)[0];
-    console.log(network)
+    // console.log(network)
+
+    const etherscanURL = `https://etherscan.io/address/${apiRes[network].nft.contract.address}`
 
     const { updateSearchParams } = useSearch();
     const handleCollection = (collectionAdd, net) => {
@@ -81,6 +86,7 @@ function Nft({ apiRes }) {
     // Style for the table background opacity
     const tableStyle = {
         backgroundColor: 'rgba(249, 250, 252, 0.4)',
+        display: 'flex'
     };
 
 
@@ -129,17 +135,43 @@ function Nft({ apiRes }) {
                     </Pane>
                     <Table  >
                         <Table.Body >
-                            <Table.Row style={tableStyle} onClick={() => handleCollection(apiRes[network].nft.contract.address, network)}>
-                                <Table.TextCell>Contract Address</Table.TextCell>
-                                <Table.TextCell isSelectable>
-                                    <Button backgroundColor="rgba(249, 250, 252, 0.9)">
+                            <Table.Row style={tableStyle} height="auto" display="flex"
+                            >
+                                <Table.TextCell
+                                    textProps={{
+                                        whiteSpace: 'unset',
+                                        overflow: "auto",
+                                    }}>Contract Address
+                                    <a href={etherscanURL}
+                                    >
+
+                                        <Button
+                                            appearance='minimal'
+                                            color="grey"
+                                        >
+                                            <SearchIcon />
+                                            EtherScan
+                                        </Button>
+                                    </a>
+                                </Table.TextCell>
+                                <Table.TextCell isSelectable textProps={{
+                                    whiteSpace: 'unset',
+                                    maxWidth: 'auto',
+                                    overflow: "auto",
+                                }}>
+                                    <Button backgroundColor="rgba(249, 250, 252, 0.9)"
+                                        onClick={() => handleCollection(apiRes[network].nft.contract.address, network)}>
                                         {apiRes[network].nft.contract.address}
                                     </Button>
                                 </Table.TextCell>
                             </Table.Row>
-                            <Table.Row style={tableStyle} >
+                            <Table.Row style={tableStyle} height="auto" display="flex">
                                 <Table.TextCell>Token ID</Table.TextCell>
-                                <Table.TextCell>
+                                <Table.TextCell
+                                    textProps={{
+                                        whiteSpace: 'unset',
+                                        overflow: "auto",
+                                    }}>
                                     <Button appearance="minimal">
                                         <CircleArrowLeftIcon onClick={() => handlePrev(apiRes[network].nft.contract.address, network, apiRes[network].nft.tokenId)} />
                                     </Button>
@@ -163,7 +195,7 @@ function Nft({ apiRes }) {
                             </Table.Row>
                             <Table.Row style={tableStyle}>
                                 <Table.TextCell >Last Updated:</Table.TextCell>
-                                <Table.TextCell >{apiRes[network].nft.timeLastUpdated}</Table.TextCell>
+                                <Table.TextCell >{new Date(apiRes[network].nft.timeLastUpdated).toString()}</Table.TextCell>
                             </Table.Row>
                             <Table.Row style={tableStyle}>
                                 <Table.TextCell >Total Supply:</Table.TextCell>
