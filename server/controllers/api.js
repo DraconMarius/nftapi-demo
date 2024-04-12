@@ -206,8 +206,14 @@ router.get('/nft/wallet/:address', async (req, res) => {
             // console.log(`${net}, pageKey: ${nfts.pageKey}`)
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
             const okNfts = nfts.ownedNfts.filter(nft => {
-                return nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
-            });
+                const hasValidImageUrl = nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
+
+                // Check for description in both possible locations
+                const description = nft.description || (nft.contract.openSeaMetadata && nft.contract.openSeaMetadata.description) || '';
+                const isNotSpam = !description.toLowerCase().includes('stolen' || 'spam');
+
+                return hasValidImageUrl && isNotSpam;
+            })
             return {
                 [net]: {
                     okNfts,
