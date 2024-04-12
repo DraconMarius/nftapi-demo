@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 //components import
 import Nav from './cont/Nav';
 import Search from './cont/Search'
+import Footer from './cont/Footer'
 //evergreen import
 import { Pane } from 'evergreen-ui';
 
@@ -49,7 +50,7 @@ function App() {
 
           </Router>
         </SearchProvider>
-        {/* <Footer /> */}
+        <Footer />
       </Pane >
     </TourProvider>
   );

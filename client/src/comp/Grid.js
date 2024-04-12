@@ -33,11 +33,13 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
 
         <Tooltip content={name}>
             <Card
-                elevation={3}
+                elevation={2}
                 width={200}
                 height={200}
                 margin={8}
                 display="flex"
+                hoverElevation={3}
+                activeElevation={4}
                 justifyContent="center"
                 alignItems="center"
                 flexDirection="column"

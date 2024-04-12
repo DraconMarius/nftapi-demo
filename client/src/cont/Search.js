@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { Alchemy, Network } from 'alchemy-sdk';
 
 import Display from './Disp';
+import Default from '../comp/Default'
 
 import { useSearch } from './searchContex'
 
@@ -60,9 +61,9 @@ function Search() {
             try {
                 let data;
                 let fetchType = determineFetchType(searchParams);
-    
+
                 console.log('Fetch Type:', fetchType); // Debug the fetchType value
-    
+
                 switch (fetchType) {
                     case 'walletAdd':
                         data = await getNFTsForOwner(searchParams.walletAdd);
@@ -79,9 +80,9 @@ function Search() {
                     case 'page':
                         const pageType = searchParams.collectionAdd ? "collectionP" : "walletP"
                         console.log("page hit", pageType)
-    
+
                         if (pageType === "walletP") {
-    
+
                             data = await getNFTsPage(searchParams.network, searchParams.walletAdd, searchParams.pageKey);
                         }
                         if (pageType === "collectionP") {
@@ -92,7 +93,7 @@ function Search() {
                     default:
                         setType('default');
                 }
-    
+
                 return data;
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -136,7 +137,7 @@ function Search() {
             {((type === "default") && (loading === false) && !apiRes) ?
                 <Pane display="flex"
                     justifyContent="center" alignItems="center" marginTop={16}>
-                    <Pane display="flex" flexDirection="column">
+                    <Pane display="flex" flexDirection="column" alignItems="center">
                         <Typewriter options={{
                             loop: true,
                             skipAddStyles: true,
@@ -156,6 +157,7 @@ function Search() {
                                     .start()
                             }}
                         />
+                        <Default />
                     </Pane>
                 </Pane>
                 : (loading === true) ?

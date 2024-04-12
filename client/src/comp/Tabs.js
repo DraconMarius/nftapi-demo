@@ -6,7 +6,8 @@ import {
     Button, CircleArrowRightIcon,
     CircleArrowLeftIcon,
     Badge,
-    Pill
+    Pill,
+    SearchIcon
 } from 'evergreen-ui';
 
 
@@ -26,6 +27,9 @@ function Tabs({ apiRes, type }) {
     const isLastPage = network => !apiRes[network]?.pageKey;
 
     console.log(`first page:${isFirstPage}, last page:${isLastPage("Eth")}`)
+
+    const etherscanURL = `https://etherscan.io/address/${searchParams.walletAdd || searchParams.contractAdd}`
+
 
     //TODO: if needed, update searchParmas pageKeys to be an object for more complicated search later
     const handlePageChange = (network, isNext) => {
@@ -128,6 +132,17 @@ function Tabs({ apiRes, type }) {
                                         >
                                             Prev
                                         </Button>
+                                        <a href={etherscanURL}
+                                        >
+
+                                            <Button
+                                                appearance='minimal'
+                                                color="grey"
+                                            >
+                                                <SearchIcon />
+                                                EtherScan
+                                            </Button>
+                                        </a>
                                         <Button
                                             iconBefore={CircleArrowRightIcon}
                                             onClick={() => handlePageChange(network, true)}
@@ -214,6 +229,17 @@ function Tabs({ apiRes, type }) {
                                             >
                                                 Prev
                                             </Button>
+                                            <a href={etherscanURL}
+                                            >
+
+                                                <Button
+                                                    appearance='minimal'
+                                                    color="grey"
+                                                >
+                                                    <SearchIcon />
+                                                    EtherScan
+                                                </Button>
+                                            </a>
                                             <Button
                                                 iconBefore={CircleArrowRightIcon}
                                                 onClick={() => handlePageChange(network, true)}
