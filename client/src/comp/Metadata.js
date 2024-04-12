@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
     Pane,
     Badge,
@@ -10,7 +10,7 @@ import Marquee from "react-fast-marquee"
 function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCount, walletAdd }) {
     const openSeaExtra = openSeaMetadata ? Object.entries(openSeaMetadata) : null
     // console.log(openSeaExtra)
-    console.log(walletAdd)
+    // console.log(walletAdd)
 
 
     return (

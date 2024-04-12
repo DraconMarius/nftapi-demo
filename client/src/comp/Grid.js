@@ -16,7 +16,7 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
     };
 
     const handleClick = (contractAdd, net, id) => {
-        console.log(id)
+        // console.log(id)
         updateSearchParams({
             "walletAdd": '',
             "collectionAdd": '',

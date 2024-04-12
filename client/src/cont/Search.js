@@ -32,8 +32,6 @@ function Search() {
     const [loading, setLoading] = useState(false)
     // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [type, setType] = useState("default")
-    //storing pgKey response
-    const [pgKey, setPgKey] = useState([]);
 
     const determineFetchType = (params) => {
         // Check for specific combinations of parameters

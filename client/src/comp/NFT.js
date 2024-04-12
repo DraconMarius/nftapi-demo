@@ -13,14 +13,15 @@ import {
     SearchIcon
 } from 'evergreen-ui';
 
-import etherscan from '../assets/etherscan-logo.png'
+
 
 function Nft({ apiRes }) {
     // console.log("test", apiRes)
     const network = Object.keys(apiRes)[0];
     // console.log(network)
 
-    const etherscanURL = `https://etherscan.io/address/${apiRes[network].nft.contract.address}`
+    const etherscanURL = `https://etherscan.io/address/
+        ${apiRes[network].nft.contract.address}`
 
     const { updateSearchParams } = useSearch();
     const handleCollection = (collectionAdd, net) => {

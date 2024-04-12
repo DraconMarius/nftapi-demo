@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 
 import logo from '../assets/alchemylogo.png';
 
@@ -10,8 +10,12 @@ import {
     Select,
     TextInput,
     SearchIcon,
-    Button
+    Button,
+    InfoSignIcon
 } from 'evergreen-ui';
+
+import { useTour } from '@reactour/tour'
+
 
 
 
@@ -24,7 +28,8 @@ function Nav() {
     const [NetOp, setNetOp] = useState(false)
     const [id, setId] = useState('')
     const [idOp, setIdOp] = useState(false)
-    const { searchParams, updateSearchParams } = useSearch();
+    const { updateSearchParams } = useSearch();
+    const { setIsOpen } = useTour()
 
     const blankState = {
         network: '',
@@ -66,15 +71,6 @@ function Nav() {
     }
 
 
-    // useEffect(() => {
-    //     console.log(searchParams);
-    // }, [searchParams]);
-
-    // useEffect(() => {
-    //     console.log(net);
-    //     updateSearchParams("network", net)
-    // }, [net])
-
     useEffect(() => {
         console.log(type);
         if (type === "collectionAdd" || type === "contractAdd") {
@@ -94,7 +90,7 @@ function Nav() {
 
 
     return (
-        <>
+
             <Pane className="App" display='flex' padding={16} background='tint2' borderRadius={3}>
                 <Pane flex={1} alignItems="center" display="flex">
                     <a
@@ -105,9 +101,9 @@ function Nav() {
 
                     </a>
                 </Pane>
-                <Pane display='flex' alignItems='center' justifyContent="center" >
+                <Pane display='flex' alignItems='center' justifyContent="center" className="sec-step">
                     <>
-                        <Select value={type} onChange={e => setType(e.target.value)}>
+                        <Select className="first-step" value={type} onChange={e => setType(e.target.value)}>
                             <option value="walletAdd">Wallet</option>
                             <option value="contractAdd">NFTContract</option>
                             <option value="collectionAdd">Collection</option>
@@ -163,9 +159,10 @@ function Nav() {
                         </Button>
                     </Link>}
                 </Pane >
+                <InfoSignIcon color="blue" onClick={() => setIsOpen(true)} />
             </Pane >
 
-        </>
+
     );
 }
 
