@@ -166,6 +166,8 @@ router.get('/nft/wallet/:net/:address/page', async (req, res) => {
 router.get('/nft/wallet/:address', async (req, res) => {
     console.log('==============/NFT/wallet==============')
     const address = req.params.address
+    const spam = req.query.spam || null
+    console.log(spam, "<-- spam?")
 
     // const fetchNFTperNetwork = async (net, config, address) => {
     //     const alchemy = new Alchemy(config);
@@ -193,36 +195,64 @@ router.get('/nft/wallet/:address', async (req, res) => {
     //spam filter 
     // { excludeFilters: [NftFilters.SPAM] }
 
-    const fetchNFTperNetwork = async (net, config, address) => {
+    const fetchNFTperNetwork = async (net, config, address, spam) => {
         const alchemy = new Alchemy(config);
         // console.log(config);
-        let options = {
+        let withSpam = {
             excludeFilters: [NftFilters.SPAM],
             pageSize: 30
         }
+
+        let noSpam = {
+            pageSize: 30
+        }
+
+        let options = spam ? withSpam : noSpam
+        console.log("options:", options)
         try {
             const nfts = await alchemy.nft.getNftsForOwner(address, options);
             console.log(`completed ${net}, totalCount: ${nfts.totalCount}`);
             // console.log(`${net}, pageKey: ${nfts.pageKey}`)
             //returning an object for each network, including res, pulled out totalCount and pageKey for easier access
-            const okNfts = nfts.ownedNfts.filter(nft => {
-                const hasValidImageUrl = nft.image && typeof nft.image.cachedUrl === 'string' && nft.image.cachedUrl.startsWith('http');
 
-                // Check for description in both possible locations
-                const description = nft.description || (nft.contract.openSeaMetadata && nft.contract.openSeaMetadata.description) || '';
-                const isNotSpam = !description.toLowerCase().includes('stolen' || 'spam');
+            //if spam turned on, filter valid Image url AND additional filter
+            if (spam) {
+                const okNfts = nfts.ownedNfts.filter(nft => {
+                    const hasValidImageUrl = (((nft.image && typeof nft.image.cachedUrl) === 'string') && nft.image.cachedUrl.startsWith('http')) || (nft.contract.openSeaMetadata.imageUrl && nft.contract.openSeaMetadata.imageUrl.startsWith('http'));
 
-                return hasValidImageUrl && isNotSpam;
-            })
-            return {
-                [net]: {
-                    okNfts,
-                    "totalCount": nfts.totalCount,
-                    "pageKey": nfts.pageKey,
-                    "validAt": nfts.validAt,
-                    "walletAdd": address
-                }
-            };
+                    // Check for description in both possible locations
+                    const description = nft.description || (nft.contract.openSeaMetadata && nft.contract.openSeaMetadata.description) || '';
+                    const isNotSpam = !description.toLowerCase().includes('stolen' || 'spam');
+
+
+                    // console.log("spam activated")
+                    return hasValidImageUrl && isNotSpam;
+                })
+                return {
+                    [net]: {
+                        okNfts,
+                        "totalCount": nfts.totalCount,
+                        "pageKey": nfts.pageKey,
+                        "validAt": nfts.validAt,
+                        "walletAdd": address
+                    }
+                };
+            } else {
+                const okNfts = nfts.ownedNfts.filter(nft => {
+                    const hasValidImageUrl = (((nft.image && typeof nft.image.cachedUrl) === 'string') && nft.image.cachedUrl.startsWith('http')) || (nft.contract.openSeaMetadata.imageUrl && nft.contract.openSeaMetadata.imageUrl.startsWith('http'));
+                    // console.log("spam activated")
+                    return hasValidImageUrl;
+                })
+                return {
+                    [net]: {
+                        okNfts,
+                        "totalCount": nfts.totalCount,
+                        "pageKey": nfts.pageKey,
+                        "validAt": nfts.validAt,
+                        "walletAdd": address
+                    }
+                };
+            }
         } catch (err) {
             console.error(`Failed to fetch NFT for ${net} network`);
             return { [net]: { error: `Failed to fetch NFT for ${net} network`, details: err.message } };
@@ -233,7 +263,7 @@ router.get('/nft/wallet/:address', async (req, res) => {
         const results = await Promise.all(
             //await results from fetch per network
             Object.entries(configs).map(([net, config]) =>
-                fetchNFTperNetwork(net, config, address)
+                fetchNFTperNetwork(net, config, address, spam)
             )
         );
         // Combine the results into a single array
