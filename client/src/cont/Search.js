@@ -66,7 +66,7 @@ function Search() {
 
                 switch (fetchType) {
                     case 'walletAdd':
-                        data = await getNFTsForOwner(searchParams.walletAdd);
+                        data = await getNFTsForOwner(searchParams.walletAdd, searchParams.spam);
                         setType(data ? 'wallet' : 'error');
                         break;
                     case 'collection':
@@ -83,7 +83,7 @@ function Search() {
 
                         if (pageType === "walletP") {
 
-                            data = await getNFTsPage(searchParams.network, searchParams.walletAdd, searchParams.pageKey);
+                            data = await getNFTsPage(searchParams.network, searchParams.walletAdd, searchParams.pageKey, searchParams.spam);
                         }
                         if (pageType === "collectionP") {
                             data = await getNFTsCollection(searchParams.network, searchParams.collectionAdd, searchParams.pageKey)

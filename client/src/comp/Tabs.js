@@ -7,7 +7,9 @@ import {
     CircleArrowLeftIcon,
     Badge,
     Pill,
-    SearchIcon
+    SearchIcon,
+    Switch,
+    Paragraph
 } from 'evergreen-ui';
 
 
@@ -20,6 +22,7 @@ function Tabs({ apiRes, type }) {
     //now storing prev/page Key in contex
     const { searchParams, updateSearchParams } = useSearch();
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [checked, setChecked] = useState(searchParams.spam);
 
     const networks = Object.keys(apiRes);
     // Calculate firstPage and lastPage based on current apiRes and searchParams
@@ -28,7 +31,9 @@ function Tabs({ apiRes, type }) {
 
     console.log(`first page:${isFirstPage}, last page:${isLastPage("Eth")}`)
 
-    const etherscanURL = `https://etherscan.io/address/${searchParams.walletAdd || searchParams.contractAdd}`
+    const address = searchParams.walletAdd || searchParams.contractAdd
+
+    const etherscanURL = `https://etherscan.io/address/${address}`
 
 
     //TODO: if needed, update searchParmas pageKeys to be an object for more complicated search later
@@ -65,9 +70,21 @@ function Tabs({ apiRes, type }) {
         }
     };
 
+    const spamToggle = (e) => {
+        //everytime spam checked toggle change
+        setChecked(e)
+
+        updateSearchParams({
+            ...searchParams,
+            spam: e
+        })
+    }
+
+
 
     return (
         <Pane display="flex" width="auto">
+
             {/* if type is wallet */}
             {(apiRes && ((type === "wallet") || (type === "walletP"))) ? (
                 <Pane display="flex" width="100%" flexDirection="column">
@@ -85,6 +102,7 @@ function Tabs({ apiRes, type }) {
                                 validAt={apiRes[network]?.validAt}
                                 totalCount={apiRes[network]?.totalCount}
                             />
+
                         </Pane>
                     ))}
                     <Pane display="flex">
@@ -124,6 +142,12 @@ function Tabs({ apiRes, type }) {
                                     display={index === selectedIndex ? 'block' : 'none'}
 
                                 >
+                                    <Pane display="flex" alignItems="center" justifyContent="center" >
+                                        <Paragraph>
+                                            Spam Protection:
+                                        </Paragraph>
+                                        <Switch checked={checked} onChange={(e) => spamToggle(e.target.checked)} padding={8} />
+                                    </Pane>
                                     <Pane display="flex" justifyContent="space-between" alignItems="center" padding={8}>
                                         <Button
                                             iconBefore={CircleArrowLeftIcon}

@@ -2,17 +2,32 @@
 
 
 
-export const getNFTsForOwner = async (address) => {
+export const getNFTsForOwner = async (address, spam) => {
+    console.log(spam, "spam?")
+    if ((spam === false) || (spam === "false")) {
+        console.log(`spam = false ${spam}`)
+        try {
+            const response = await fetch(`/api/nft/wallet/${address}/?spam=false`);
+            if (!response.ok) throw new Error('nft wallet fetch error', response.error);
 
-    try {
-        const response = await fetch(`/api/nft/wallet/${address}`);
-        if (!response.ok) throw new Error('nft wallet fetch error', response.error);
+            const data = await response.json();
 
-        const data = await response.json();
+            return data;
+        } catch (err) {
+            console.error(`Failed to fetch NFTs '${address}'`, err)
+        }
+    } else if (!spam || (spam !== false) || (spam !== "false")) {
+        console.log(`spam = true ${spam}`)
+        try {
+            const response = await fetch(`/api/nft/wallet/${address}`);
+            if (!response.ok) throw new Error('nft wallet fetch error', response.error);
 
-        return data;
-    } catch (err) {
-        console.error(`Failed to fetch NFTs '${address}'`, err)
+            const data = await response.json();
+
+            return data;
+        } catch (err) {
+            console.error(`Failed to fetch NFTs '${address}'`, err)
+        }
     }
 
 }
