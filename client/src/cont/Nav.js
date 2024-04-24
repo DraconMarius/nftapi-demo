@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import logo from '../assets/alchemylogo.png';
 
 import { useSearch } from './searchContex'
+import Connect from '../comp/Connect';
 
 import {
     Pane,
@@ -11,7 +12,8 @@ import {
     TextInput,
     SearchIcon,
     Button,
-    InfoSignIcon
+    InfoSignIcon,
+    Position
 } from 'evergreen-ui';
 
 import { useTour } from '@reactour/tour'
@@ -28,7 +30,7 @@ function Nav() {
     const [NetOp, setNetOp] = useState(false)
     const [id, setId] = useState('')
     const [idOp, setIdOp] = useState(false)
-    const { updateSearchParams } = useSearch();
+    const { searchParams, updateSearchParams } = useSearch();
     const { setIsOpen } = useTour()
 
     const blankState = {
@@ -131,9 +133,10 @@ function Nav() {
 
                     <Pane >
                         <TextInput
-                            placeholder="Search..."
+                            placeholder={searchParams.walletAdd || "Search..."}
                             onChange={e => setString(e.target.value)}
                         />
+
                     </Pane>
                 </>
                 {!NetOp ? (
@@ -160,8 +163,13 @@ function Nav() {
                     </Button>
                 </Link>}
             </Pane >
-            <InfoSignIcon color="blue" onClick={() => setIsOpen(true)} />
+            <Pane>
+                <InfoSignIcon cursor="pointer" color="blue" onClick={() => setIsOpen(true)} />
+                <Connect />
+            </Pane>
+
         </Pane >
+
 
 
     );
