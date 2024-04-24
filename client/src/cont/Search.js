@@ -36,7 +36,7 @@ function Search() {
 
     const determineFetchType = (params) => {
         // Check for specific combinations of parameters
-        if (params.walletAdd && !params.collectionAdd && !params.tokenId && !(params.pageKey || params.prevKeys[0])) {
+        if (params.walletAdd && !params.network && !params.collectionAdd && !params.tokenId && !(params.pageKey || params.prevKeys[0])) {
             return 'walletAdd';
         } else if (params.collectionAdd && params.network && !params.tokenId &&
             !(params.pageKey || params.prevKeys[0])) {
@@ -44,7 +44,7 @@ function Search() {
         } else if (params.tokenId && params.network && params.contractAdd) {
             return 'NFT';
         } else if ((params.network && params.walletAdd && (params.pageKey || params.prevKeys[0])) ||
-            (params.network && params.collectionAdd && (params.pageKey || params.prevKeys[0]))) {
+            (params.network && params.collectionAdd && (params.pageKey || params.prevKeys[0])) || (params.network && params.walletAdd)) {
             return 'page';
         }
         // Add more conditions as needed for different fetch scenarios
@@ -79,7 +79,6 @@ function Search() {
                         break;
                     case 'page':
                         const pageType = searchParams.collectionAdd ? "collectionP" : "walletP"
-                        console.log("page hit", pageType)
 
                         if (pageType === "walletP") {
 
