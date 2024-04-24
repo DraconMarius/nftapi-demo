@@ -36,7 +36,7 @@ function Search() {
 
     const determineFetchType = (params) => {
         // Check for specific combinations of parameters
-        if (params.walletAdd && !params.network && !params.collectionAdd && !params.tokenId && !(params.pageKey || params.prevKeys[0])) {
+        if (params.walletAdd && !params.network && !params.collectionAdd && !params.tokenId && !params.pageKey && !params.prevKeys[0]) {
             return 'walletAdd';
         } else if (params.collectionAdd && params.network && !params.tokenId &&
             !(params.pageKey || params.prevKeys[0])) {
@@ -62,7 +62,7 @@ function Search() {
                 let data;
                 let fetchType = determineFetchType(searchParams);
 
-                console.log('Fetch Type:', fetchType); // Debug the fetchType value
+                // console.log('Fetch Type:', fetchType); 
 
                 switch (fetchType) {
                     case 'walletAdd':

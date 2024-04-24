@@ -33,7 +33,7 @@ function Connect() {
 
         const handleProviderAnnouncement = (event) => {
             const providerDetails = event.detail;
-            setProviders([providerDetails]);
+            setProviders(prevProviders => [...prevProviders, providerDetails]);
             console.log(providerDetails)
         };
 
@@ -124,7 +124,7 @@ function Connect() {
                                 <Button onClick={() => { handleConnect(wallet) }} margin={8} backgroundColor="rgba(249, 250, 252, 0.4)">
                                     <Pane display="flex" justifyContent="space-between">
 
-                                        <img src={wallet.info.icon} />
+                                        <img src={wallet.info.icon} height="auto" />
                                         {wallet.info.name}
                                     </Pane>
                                 </Button>
