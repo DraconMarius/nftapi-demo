@@ -108,6 +108,7 @@ function Connect() {
                 containerProps={{
                     display: 'flex',
                     flex: '1',
+                    flexShrink: '1',
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: "center",
@@ -121,10 +122,10 @@ function Connect() {
                         providers.map((wallet, wIndex) => (
                             <Card key={wIndex} display="flex" justifyContent='center' alignItems="center">
 
-                                <Button onClick={() => { handleConnect(wallet) }} margin={8} backgroundColor="rgba(249, 250, 252, 0.4)">
-                                    <Pane display="flex" justifyContent="space-between">
+                                <Button appearance='minimal' onClick={() => { handleConnect(wallet) }}>
+                                    <Pane display="flex" justifyContent="space-between" alignItmes="center">
 
-                                        <img src={wallet.info.icon} height="auto" />
+                                        <img src={wallet.info.icon} width="32px" />
                                         {wallet.info.name}
                                     </Pane>
                                 </Button>

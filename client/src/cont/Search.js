@@ -142,11 +142,11 @@ function Search() {
                             skipAddStyles: true,
                         }}
                             onInit={(typewriter) => {
-                                typewriter.typeString('You can see all NFT owned by a wallet address')
+                                typewriter.typeString('This NFT API demo can see all NFT owned by a wallet address')
                                     .pauseFor(800)
                                     .deleteChars(37)
                                     .pauseFor(1600)
-                                    .typeString('checkout a specific Collection')
+                                    .typeString('query a specific Collection')
                                     .pauseFor(2400)
                                     .deleteChars(21)
                                     .pauseFor(2400)
