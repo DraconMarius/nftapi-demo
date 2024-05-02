@@ -29,7 +29,7 @@ function Gallery({ images }) {
                 return (
                     <img
                         key={index}
-                        src={img.image.cachedUrl || img.image.thumbnailUrl || img.image.pngUrl}
+                        src={img.image.cachedUrl || img.image.thumbnailUrl || img.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
                         alt={`NFT Display ${index + 1}`}
                         style={{
                             maxWidth: '100%',

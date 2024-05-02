@@ -82,12 +82,6 @@ function Tabs({ apiRes, type }) {
         })
     }
 
-    const galletyToggle = (e) => {
-        setGallery(e)
-
-
-    }
-
 
 
     return (
@@ -155,6 +149,12 @@ function Tabs({ apiRes, type }) {
                                             Spam Protection:
                                         </Paragraph>
                                         <Switch checked={checked} onChange={(e) => spamToggle(e.target.checked)} padding={8} />
+                                    </Pane>
+                                    <Pane display="flex" alignItems="center" justifyContent="center" >
+                                        <Paragraph>
+                                            Gallery View?:
+                                        </Paragraph>
+                                        <Switch checked={isGallery} onChange={(e) => setGallery(e.target.checked)} padding={8} />
                                     </Pane>
                                     <Pane display="flex" justifyContent="space-between" alignItems="center" padding={8}>
                                         <Button
@@ -289,7 +289,7 @@ function Tabs({ apiRes, type }) {
                                                 {apiRes[network]?.okNfts.map((item, itemIndex) => (
                                                     <Grid
                                                         key={itemIndex}
-                                                        imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl}
+                                                        imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl || item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
                                                         fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
                                                         name={item.name || item.raw.metadata.name}
                                                         contractAdd={item.contract.address}
