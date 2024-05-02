@@ -14,6 +14,7 @@ import {
 
 
 import Grid from './Grid';
+import Gallery from './Gallery'
 import Metadata from "./Metadata"
 import { useSearch } from '../cont/searchContex';
 
@@ -23,6 +24,7 @@ function Tabs({ apiRes, type }) {
     const { searchParams, updateSearchParams } = useSearch();
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [checked, setChecked] = useState(searchParams.spam);
+    const [isGallery, setGallery] = useState(false)
 
     const networks = Object.keys(apiRes);
     // Calculate firstPage and lastPage based on current apiRes and searchParams
@@ -31,7 +33,7 @@ function Tabs({ apiRes, type }) {
 
     console.log(`first page:${isFirstPage}, last page:${isLastPage("Eth")}`)
 
-    const address = searchParams.walletAdd || searchParams.contractAdd
+    const address = searchParams.walletAdd || searchParams.contractAdd || searchParams.collectionAdd
 
     const etherscanURL = `https://etherscan.io/address/${address}`
 
@@ -78,6 +80,12 @@ function Tabs({ apiRes, type }) {
             ...searchParams,
             spam: e
         })
+    }
+
+    const galletyToggle = (e) => {
+        setGallery(e)
+
+
     }
 
 
@@ -176,27 +184,22 @@ function Tabs({ apiRes, type }) {
                                         </Button>
                                     </Pane>
 
-
-                                    <Pane flex="1" display="grid"
-                                        gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
-                                        padding={8}
-                                    >
-
-                                        {apiRes[network]?.okNfts?.map((item, itemIndex) => {
-                                            return (
-
-                                                < Grid
+                                    {!isGallery ? ( // if not gallery, iterate grid, if not send array to gallery
+                                        < Pane flex="1" justifyContent="center" display="grid"
+                                            gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
+                                            padding={8}
+                                        >
+                                            {apiRes[network]?.okNfts.map((item, itemIndex) => (
+                                                <Grid
                                                     key={itemIndex}
                                                     imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl}
                                                     fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
-                                                    name={item.title || item.raw.metadata.name}
+                                                    name={item.name || item.raw.metadata.name}
                                                     contractAdd={item.contract.address}
                                                     id={item.tokenId}
                                                     net={network} />
-
-                                            )
-                                        })}
-                                    </Pane>
+                                            ))}
+                                        </Pane>) : (<Gallery images={apiRes[network]?.okNfts} />)}
                                 </Pane>
                             ))}
                         </Pane>
@@ -214,7 +217,7 @@ function Tabs({ apiRes, type }) {
                                 openSeaMetadata={(apiRes[network]?.okNfts[0]?.contract?.openSeaMetadata) || "null"}
                             />))}
                         <Pane display="flex">
-                            <Tablist display="flex" flexDirection="column" marginRight={8}>
+                            <Tablist display="flex" flexDirection="column" marginRight={8} zIndex={3}>
                                 {networks.map((network, index) => (
                                     <Tab
                                         key={network}
@@ -245,6 +248,12 @@ function Tabs({ apiRes, type }) {
                                         aria-hidden={index !== selectedIndex}
                                         display={index === selectedIndex ? 'grid' : 'none'}
                                     >
+                                        <Pane display="flex" alignItems="center" justifyContent="center" >
+                                            <Paragraph>
+                                                Gallery View?:
+                                            </Paragraph>
+                                            <Switch checked={isGallery} onChange={(e) => setGallery(e.target.checked)} padding={8} />
+                                        </Pane>
                                         <Pane display="flex" justifyContent="space-between" padding={16}>
                                             <Button
                                                 iconBefore={CircleArrowLeftIcon}
@@ -265,30 +274,29 @@ function Tabs({ apiRes, type }) {
                                                 </Button>
                                             </a>
                                             <Button
-                                                iconBefore={CircleArrowRightIcon}
+                                                iconAfter={CircleArrowRightIcon}
                                                 onClick={() => handlePageChange(network, true)}
                                                 disabled={isLastPage(network)} // Disable the button on the last page
                                             >
                                                 Next
                                             </Button>
                                         </Pane>
-
-                                        <Pane flex="1" justifyContent="center" display="grid"
-                                            gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
-                                            padding={8}
-                                        >
-                                            {apiRes[network]?.okNfts.map((item, itemIndex) => (
-                                                <Grid
-                                                    key={itemIndex}
-                                                    imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl}
-                                                    fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
-                                                    name={item.name || item.raw.metadata.name}
-                                                    contractAdd={item.contract.address}
-                                                    id={item.tokenId}
-                                                    net={network} />
-
-                                            ))}
-                                        </Pane>
+                                        {!isGallery ? ( // if not gallery, iterate grid, if not send array to gallery
+                                            < Pane flex="1" justifyContent="center" display="grid"
+                                                gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
+                                                padding={8}
+                                            >
+                                                {apiRes[network]?.okNfts.map((item, itemIndex) => (
+                                                    <Grid
+                                                        key={itemIndex}
+                                                        imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl}
+                                                        fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
+                                                        name={item.name || item.raw.metadata.name}
+                                                        contractAdd={item.contract.address}
+                                                        id={item.tokenId}
+                                                        net={network} />
+                                                ))}
+                                            </Pane>) : (<Gallery images={apiRes[network]?.okNfts} />)}
                                     </Pane>
                                 ))}
                             </Pane>
