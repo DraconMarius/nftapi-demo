@@ -37,11 +37,10 @@ function Tabs({ apiRes, type }) {
 
     const etherscanURL = `https://etherscan.io/address/${address}`
 
-
-    //TODO: if needed, update searchParmas pageKeys to be an object for more complicated search later
+    //pagekey logic is within searchContext, 
     const handlePageChange = (network, isNext) => {
         console.log(isNext, "isNext?")
-        console.log(network, "network")
+        // console.log(network, "network")
         if (isNext) {
             // Move to the next page
             const nextPageKey = apiRes[network]?.pageKey;
@@ -199,7 +198,7 @@ function Tabs({ apiRes, type }) {
                                                     id={item.tokenId}
                                                     net={network} />
                                             ))}
-                                        </Pane>) : (<Gallery images={apiRes[network]?.okNfts} />)}
+                                        </Pane>) : (<Gallery images={apiRes[network]?.okNfts} net={network} />)}
                                 </Pane>
                             ))}
                         </Pane>
@@ -296,7 +295,7 @@ function Tabs({ apiRes, type }) {
                                                         id={item.tokenId}
                                                         net={network} />
                                                 ))}
-                                            </Pane>) : (<Gallery images={apiRes[network]?.okNfts} />)}
+                                            </Pane>) : (<Gallery images={apiRes[network]?.okNfts} net={network} />)}
                                     </Pane>
                                 ))}
                             </Pane>

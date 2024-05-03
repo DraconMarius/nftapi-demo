@@ -21,16 +21,19 @@ function App() {
   const steps = [
     {
       selector: '.first-step',
-      content: 'To use this NFT API Demo is easy! First please select the type of address you wish to query',
-      stepInteraction: true
+      content: "To use this NFT API Demo is easy! If you have a wallet extension installed, you can click the `+` icon to connect your personal wallet! If you do not see a `+` icon, don't fret! Hit -> :)",
     },
     {
       selector: '.sec-step',
-      content: 'Then provide any additional required information and hit the search button to your right!',
+      content: 'Otherwise please select the type of address you wish to query'
     },
     {
       selector: '.third-step',
-      content: 'After you can You can then click thru and select individual NFT for a more detailed view...',
+      content: 'then provide any additional required information and hit the search button to your right!',
+    },
+    {
+      selector: '.fourth-step',
+      content: 'Afterward, you can then toggle different view or and select individual NFT for a more detailed view...',
     }
   ]
   return (
@@ -40,7 +43,7 @@ function App() {
           <Router>
             <Nav></Nav>
             {/* react router to handle change of page */}
-            <Pane className="third-step">
+            <Pane className="fourth-step">
               <Routes>
                 <Route exact path="/" element={<Navigate replace to="/search" />} />
                 <Route exact path="/search" element={<Search />} />

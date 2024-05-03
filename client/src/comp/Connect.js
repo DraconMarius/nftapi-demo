@@ -34,7 +34,7 @@ function Connect() {
         const handleProviderAnnouncement = (event) => {
             const providerDetails = event.detail;
             setProviders(prevProviders => [...prevProviders, providerDetails]);
-            console.log(providerDetails)
+            // console.log(providerDetails)
         };
 
         // Listen for wallet providerAnnouncement from above,
@@ -48,11 +48,6 @@ function Connect() {
             window.removeEventListener('eip6963:announceProvider', handleProviderAnnouncement);
         };
     }, []); // <-- run only when mounted
-
-    const handleShowProvider = () => {
-        // console.log("test")
-        setWalletDisp(true)
-    }
 
     const handleConnect = async (providerDetail) => {
 
@@ -68,7 +63,7 @@ function Connect() {
         setWalletDisp(false)
     }
     useEffect(() => {
-        console.log(address)
+        // console.log(address)
         updateSearchParams({
             collectionAdd: '',
             contractAdd: '',
@@ -83,10 +78,9 @@ function Connect() {
     }, [address])
 
     useEffect(() => {
-        console.log(providers)
+        // console.log(providers)
         // console.log(providers.length)
         if (!providers[0]) {
-            console.log("zero")
             setBtnDisp(false)
         } else {
             setBtnDisp(true)

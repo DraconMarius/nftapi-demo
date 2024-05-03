@@ -104,9 +104,9 @@ function Nav() {
 
                 </a>
             </Pane>
-            <Pane display='flex' alignItems='center' justifyContent="center" className="sec-step">
+            <Pane display='flex' alignItems='center' justifyContent="center" className="third-step">
                 <>
-                    <Select className="first-step" value={type} onChange={e => setType(e.target.value)}>
+                    <Select className="sec-step" value={type} onChange={e => setType(e.target.value)}>
                         <option value="walletAdd">Wallet</option>
                         <option value="contractAdd">NFTContract</option>
                         <option value="collectionAdd">Collection</option>
@@ -163,7 +163,7 @@ function Nav() {
                     </Button>
                 </Link>}
             </Pane >
-            <Pane>
+            <Pane className="first-step">
                 <InfoSignIcon cursor="pointer" color="blue" onClick={() => setIsOpen(true)} />
                 <Connect />
             </Pane>

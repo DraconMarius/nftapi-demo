@@ -11,7 +11,7 @@ const Default = () => {
     const items = [
         {
             title: 'Need Some help to get started?',
-            description: 'please press the info icon on your top right',
+            description: 'please press the info icon on your top right, if you have a wallet extension installed, feel free to press the `+` to connect your wallet!',
             gif: tour
         },
         {
