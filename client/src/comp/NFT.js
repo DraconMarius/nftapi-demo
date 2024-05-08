@@ -22,7 +22,7 @@ function Nft({ apiRes }) {
 
     const etherscanURL = `https://etherscan.io/address/${apiRes[network].nft.contract.address}`
 
-    const { updateSearchParams } = useSearch();
+    const { searchParams, updateSearchParams } = useSearch();
     const handleCollection = (collectionAdd, net) => {
         updateSearchParams({
             "walletAdd": '',
@@ -31,7 +31,8 @@ function Nft({ apiRes }) {
             "network": net,
             "tokenId": '',
             "pageKey": '',
-            "prevKeys": []
+            "prevKeys": [],
+            "back": { ...searchParams }
         });
     };
 

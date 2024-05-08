@@ -7,7 +7,8 @@ const FooterContainer = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: "8"
+    padding: "16",
+    height: ""
 }
     ;
 

@@ -6,7 +6,7 @@ import { useSearch } from '../cont/searchContex';
 
 
 function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
-    const { updateSearchParams } = useSearch();
+    const { searchParams, updateSearchParams } = useSearch();
     const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
     useEffect(() => {
         setCurrentImageUrl(imageUrl); // This will trigger a re-render when imageUrl prop changes
@@ -24,7 +24,8 @@ function Grid({ imageUrl, fallbackUrl, name, contractAdd, net, id }) {
             "network": net,
             "tokenId": id,
             "pageKey": '',
-            "prevKeys": []
+            "prevKeys": [],
+            "back": { ...searchParams } // store previous params for back button
         });
     };
 
