@@ -13,7 +13,11 @@ import {
     SearchIcon,
     Button,
     InfoSignIcon,
-    Position
+    Position,
+    IconButton,
+    MenuIcon,
+    SideSheet,
+    Paragraph
 } from 'evergreen-ui';
 
 import { useTour } from '@reactour/tour'
@@ -24,9 +28,10 @@ import { useTour } from '@reactour/tour'
 function Nav() {
     //dialog state
     // console.log(apikey)
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [type, setType] = useState('walletAdd')
     const [string, setString] = useState('')
-    const [net, setNet] = useState('')
+    const [net, setNet] = useState('Eth')
     const [NetOp, setNetOp] = useState(false)
     const [id, setId] = useState('')
     const [idOp, setIdOp] = useState(false)
@@ -74,6 +79,18 @@ function Nav() {
         updateSearchParams(search);
     }
 
+    const handleSearch = () => {
+        if (!NetOp) {
+            handleChange(type, string);
+        } else if (idOp) {
+            handleChangeWithId(type, string, net, id);
+        } else {
+            handleChangeWithNet(type, string, net);
+        }
+
+        setIsMenuOpen(false)
+    };
+
 
     useEffect(() => {
         console.log(type);
@@ -94,83 +111,92 @@ function Nav() {
 
 
     return (
-
         <Pane className="App" display='flex' padding={16} background='tint2' borderRadius={3}>
             <Pane flex={1} alignItems="center" display="flex">
-                <a
-                    className="App-link"
-                    href="https://www.alchemy.com"
-                >
+                <a className="App-link" href="https://www.alchemy.com">
                     <img src={logo} className="App-logo" alt="logo" />
-
                 </a>
             </Pane>
-            <Pane display='flex' alignItems='center' justifyContent="center" className="third-step">
-                <>
-                    <Select className="sec-step" value={type} onChange={e => setType(e.target.value)}>
-                        <option value="walletAdd">Wallet</option>
-                        <option value="contractAdd">NFTContract</option>
-                        <option value="collectionAdd">Collection</option>
-                    </Select>
-
-                    {NetOp ? (<Select value={net} onChange={e => setNet(e.target.value)}>
+            <Pane alignItems='center' justifyContent="center" className="desktop-only" >
+                <Select className="sec-step" value={type} onChange={e => setType(e.target.value)}>
+                    <option value="walletAdd">Wallet</option>
+                    <option value="contractAdd">NFTContract</option>
+                    <option value="collectionAdd">Collection</option>
+                </Select>
+                {NetOp && (
+                    <Select value={net} onChange={e => setNet(e.target.value)}>
                         <option value="Eth">Ethereum</option>
                         <option value="Polygon">Polygon</option>
                         <option value="Arbitrum">Arbitrum</option>
                         <option value="Optimism">Optimism</option>
                         <option value="Base">Base</option>
+                    </Select>
+                )}
+                {idOp && (
+                    <TextInput
+                        width="100%"
+                        placeholder="tokenId"
+                        value={id}
+                        onChange={e => setId(e.target.value)}
+                    />
+                )}
+                <TextInput
+                    className="third-step"
+                    placeholder={searchParams.walletAdd || "Search..."}
+                    value={string}
+                    onChange={e => setString(e.target.value)}
+                />
+                <Button onClick={() => handleSearch()} marginLeft={8}>
+                    <SearchIcon />
+                </Button>
+            </Pane>
 
-                    </Select>) : <></>}
-
-                    {idOp ? (
-                        <Pane flex={1}>
-
-                            <TextInput
-                                width="100%"
-                                placeholder="tokeId"
-                                onChange={e => setId(e.target.value)}
-                            />
-                        </Pane>) : <></>}
-
-                    <Pane >
-                        <TextInput
-                            placeholder={searchParams.walletAdd || "Search..."}
-                            onChange={e => setString(e.target.value)}
-                        />
-
-                    </Pane>
-                </>
-                {!NetOp ? (
-                    <Link to="/search" >
-                        <Button
-                            onClick={() => handleChange(type, string)}
-                            color="inherit">
-                            <SearchIcon />
-                        </Button>
-                    </Link>
-                ) : idOp ? (
-                    <Link to="/search" >
-                        <Button
-                            onClick={() => handleChangeWithId(type, string, net, id)}
-                            color="inherit">
-                            <SearchIcon />
-                        </Button>
-                    </Link>
-                ) : <Link to="/search" >
-                    <Button
-                        onClick={() => handleChangeWithNet(type, string, net)}
-                        color="inherit">
-                        <SearchIcon />
-                    </Button>
-                </Link>}
-            </Pane >
-            <Pane className="first-step">
+            <IconButton icon={MenuIcon} appearance="minimal" onClick={() => setIsMenuOpen(!isMenuOpen)} display={['block', 'block', 'none']} className="mobile-menu-icon" />
+            <Pane className="first-step" paddingLeft={8}>
                 <InfoSignIcon cursor="pointer" color="blue" onClick={() => setIsOpen(true)} />
                 <Connect />
             </Pane>
-
+            <SideSheet containerProps={{ backgroundColor: 'rgba(249, 250, 252, 0.4)' }} isShown={isMenuOpen} position={Position.BOTTOM} onCloseComplete={() => setIsMenuOpen(false)}  >
+                <Pane padding={32} display="flex" flexDirection="column" justifyConten="center" alignItem="center"   >
+                    <Select
+                        paddingTop={8}
+                        paddingBottom={8}
+                        value={type} onChange={e => setType(e.target.value)}>
+                        <option value="walletAdd">Wallet</option>
+                        <option value="contractAdd">NFTContract</option>
+                        <option value="collectionAdd">Collection</option>
+                    </Select>
+                    {NetOp && (
+                        <Select
+                            paddingBottom={8}
+                            value={net} onChange={e => setNet(e.target.value)}>
+                            <option value="Eth">Ethereum</option>
+                            <option value="Polygon">Polygon</option>
+                            <option value="Arbitrum">Arbitrum</option>
+                            <option value="Optimism">Optimism</option>
+                            <option value="Base">Base</option>
+                        </Select>
+                    )}
+                    {idOp && (
+                        <TextInput
+                            width="100%"
+                            placeholder="Token Id"
+                            value={id}
+                            onChange={e => setId(e.target.value)}
+                        />
+                    )}
+                    <TextInput
+                        width="100%"
+                        placeholder={searchParams.walletAdd || "Search..."}
+                        value={string}
+                        onChange={e => setString(e.target.value)}
+                    />
+                    <Button onClick={() => handleSearch()} marginTop={16}>
+                        <SearchIcon />
+                    </Button>
+                </Pane>
+            </SideSheet>
         </Pane >
-
 
 
     );

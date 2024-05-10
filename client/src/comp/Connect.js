@@ -97,7 +97,7 @@ function Connect() {
                 <SymbolCrossIcon cursor="pointer" position={Position.BOTTOM_RIGHT} onClick={() => setWalletDisp(true)} />
                 : <></>}
 
-            <SideSheet isShown={walletDisp}
+            <SideSheet isShown={walletDisp} width={320}
                 onCloseComplete={() => { setWalletDisp(false) }}
                 containerProps={{
                     display: 'flex',

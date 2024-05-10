@@ -43,3 +43,29 @@
   overflow: hidden;
   /* Prevents overflow */
 }
+
+.mobile-menu-icon {
+  display: none;
+}
+
+.gridDisplay {
+  display: grid;
+  flex: 2;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-icon {
+    display: block;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .gridDisplay {
+    display: flex;
+    flex-direction: column;
+  }
+}

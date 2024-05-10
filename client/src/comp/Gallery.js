@@ -13,7 +13,7 @@ import { useSearch } from '../cont/searchContex';
 
 function Gallery({ images, net }) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const { updateSearchParams } = useSearch();
+    const { searchParams, updateSearchParams } = useSearch();
 
     const nextImage = () => {
         setCurrentIndex((currentIndex + 1) % images.length);
@@ -32,7 +32,8 @@ function Gallery({ images, net }) {
             "network": net,
             "tokenId": id,
             "pageKey": '',
-            "prevKeys": []
+            "prevKeys": [],
+            "back": { ...searchParams }
         });
     };
 

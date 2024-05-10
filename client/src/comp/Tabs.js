@@ -184,7 +184,8 @@ function Tabs({ apiRes, type }) {
                                     </Pane>
 
                                     {!isGallery ? ( // if not gallery, iterate grid, if not send array to gallery
-                                        < Pane flex="1" justifyContent="center" display="grid"
+                                        < Pane f
+                                            className="gridDisplay"
                                             gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
                                             padding={8}
                                         >
