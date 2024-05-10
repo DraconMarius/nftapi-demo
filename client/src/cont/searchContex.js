@@ -20,7 +20,7 @@ export const SearchProvider = ({ children }) => {
                 ? [...prev.prevKeys, prev.pageKey].filter(Boolean)
                 : prev.prevKeys;
 
-            console.log(updatedPrevKeys)
+            // console.log(updatedPrevKeys)
 
             if (newParams.isPrevPage) {
                 const prevPageKey = updatedPrevKeys.pop() || '';

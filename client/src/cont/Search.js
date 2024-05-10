@@ -56,7 +56,7 @@ function Search() {
     // const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
     useEffect(() => {
-        console.log(searchParams)
+        console.log("test", searchParams)
         const fetchServer = async (searchParams) => {
             try {
                 let data;

@@ -26,7 +26,7 @@ function Nav() {
     // console.log(apikey)
     const [type, setType] = useState('walletAdd')
     const [string, setString] = useState('')
-    const [net, setNet] = useState('Eth')
+    const [net, setNet] = useState('')
     const [NetOp, setNetOp] = useState(false)
     const [id, setId] = useState('')
     const [idOp, setIdOp] = useState(false)
@@ -41,7 +41,8 @@ function Nav() {
         tokenId: '',
         pageKey: '',
         prevKeys: [],
-        currentKey: ''
+        currentKey: '',
+        back: {}
     }
     const handleChange = (type, string) => {
         // Update based on type and input

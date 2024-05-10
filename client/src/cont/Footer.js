@@ -8,7 +8,7 @@ const FooterContainer = {
     alignItems: "center",
     justifyContent: "center",
     padding: "16",
-    height: ""
+    height: "110%"
 }
     ;
 

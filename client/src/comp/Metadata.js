@@ -26,7 +26,7 @@ function Metadata({ type, net, name, symbol, openSeaMetadata, validAt, totalCoun
 
                 {type === "wal" && (
                     <>
-                        <Badge colo='green'>walletAddress:</Badge>
+                        <Badge color='green'>walletAddress:</Badge>
                         <Pill color='orange' marginRight={16}>{walletAdd}</Pill>
                         <Badge color='blue'>totalCount:</Badge>
                         <Pill color="yellow" marginRight={16}>{totalCount}</Pill>

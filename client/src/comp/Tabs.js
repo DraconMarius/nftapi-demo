@@ -19,7 +19,7 @@ import Metadata from "./Metadata"
 import { useSearch } from '../cont/searchContex';
 
 function Tabs({ apiRes, type }) {
-    console.log(apiRes)
+    // console.log(apiRes)
     //now storing prev/page Key in contex
     const { searchParams, updateSearchParams } = useSearch();
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -107,7 +107,7 @@ function Tabs({ apiRes, type }) {
                         </Pane>
                     ))}
                     <Pane display="flex">
-                        <Tablist display="flex" flexDirection="column" marginRight={8}>
+                        <Tablist display="flex" flexDirection="column" marginRight={8} >
                             {networks.map((network, index) => (
                                 <Tab
                                     key={network}
@@ -129,7 +129,7 @@ function Tabs({ apiRes, type }) {
                                 </Tab>
                             ))}
                         </Tablist>
-                        <Pane padding={8} flex="1" >
+                        <Pane padding={8} flex="1" background="rgba(249, 250, 252, 0.9)" marginBottom={16}>
                             {networks.map((network, index) => (
 
                                 <Pane
@@ -205,7 +205,7 @@ function Tabs({ apiRes, type }) {
                     </Pane></Pane>) : (apiRes && ((type === "collection") || (type === "collectionP"))) ?
 
                 (
-                    <Pane display="flex" width="100%" flexDirection="column">
+                    <Pane display="flex" width="100%" flexDirection="column" >
                         {networks.map((network, index) => (
                             <Metadata
                                 key={index}
@@ -215,8 +215,8 @@ function Tabs({ apiRes, type }) {
                                 symbol={apiRes[network]?.okNfts[0]?.contract?.symbol}
                                 openSeaMetadata={(apiRes[network]?.okNfts[0]?.contract?.openSeaMetadata) || "null"}
                             />))}
-                        <Pane display="flex">
-                            <Tablist display="flex" flexDirection="column" marginRight={8} zIndex={3}>
+                        <Pane display="flex" >
+                            <Tablist display="flex" flexDirection="column" marginRight={8} >
                                 {networks.map((network, index) => (
                                     <Tab
                                         key={network}

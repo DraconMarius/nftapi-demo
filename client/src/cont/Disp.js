@@ -6,8 +6,13 @@ import {
     Portal,
     Button,
     Card,
-    Text
+    Strong,
+    Text,
+    Badge,
+    Pill
 } from 'evergreen-ui';
+
+import Marquee from "react-fast-marquee"
 
 import Collections from './Collections';
 import Wallet from './Wallet';
@@ -24,24 +29,27 @@ function Display({ apiRes, type }) {
     //show `reset` when no prev data, show `back` when data
     const [backBtn, setBackBtn] = useState(false)
 
-    const [paramsDisp, setParamDisp] = useState({
-        "walletAdd": searchParams.walletAdd,
-        "collectionAdd": searchParams.collectionAdd,
-        "contractAdd": searchParams.contractAdd,
-        "network": searchParams.network,
-        "tokenId": searchParams.tokenId
-    })
+    const [paramsDisp, setParamDisp] = useState([])
 
     const blankState = {
-        "walletAdd": '',
-        "collectionAdd": '',
-        "contractAdd": '',
-        "network": '',
-        "tokenId": '',
-        "pageKey": '',
-        "prevKeys": [],
-        "back": {}
+        network: '',
+        walletAdd: '',
+        collectionAdd: '',
+        contractAdd: '',
+        tokenId: '',
+        pageKey: '',
+        prevKeys: [],
+        currentKey: '',
+        back: {}
     }
+
+    const labels = {
+        walletAdd: 'Wallet_Address',
+        collectionAdd: 'Collection_Address',
+        contractAdd: 'Contract_Address',
+        network: 'Network',
+        tokenId: 'Token_ID'
+    };
 
     const handleBack = (backBtn) => {
         if (backBtn) {
@@ -60,15 +68,28 @@ function Display({ apiRes, type }) {
             console.log('display', type)
             setType(type)
         };
-        const isBack = (params) => Object.keys(params).length === 0;
 
-        (!(searchParams.back) || (isBack(searchParams.back))) ? setBackBtn(false) : setBackBtn(true);
+
+
+
 
     }, [apiRes, type]);
 
     useEffect(() => {
-        console.log(backBtn)
-    }, [backBtn])
+        const isBack = (params) => Object.keys(params).length === 0;
+
+        (!(searchParams.back) || (isBack(searchParams.back))) ? setBackBtn(false) : setBackBtn(true);
+
+        const filteredParams = {}
+
+        Object.entries(searchParams).forEach(([key, value]) => {
+            if (value) {  // Check if the value is not an empty string
+                filteredParams[key] = value;
+            }
+        });
+
+        setParamDisp(filteredParams);
+    }, [searchParams])
 
 
     return (
@@ -76,22 +97,6 @@ function Display({ apiRes, type }) {
         <>
             {apiRes ?
                 <Pane >
-                    <Portal>
-                        <Pane background="rgba(249, 250, 252, 0.9)" padding={24} position="fixed" bottom={0} left={0}>
-                            {!backBtn ?
-                                <Button onClick={() => handleBack(backBtn)}>Reset</Button> :
-                                <Pane display="flex" flexDirection="column">
-                                    <Text>Currently Displaying</Text>
-                                    <Text>       network: {searchParams.network}</Text>
-                                    <Text>        walletAdd: {searchParams.walletAdd}</Text>
-                                    <Text>      collectionAdd: {searchParams.collectionAdd}</Text>
-                                    <Text>       contractAdd: {searchParams.contractAdd}</Text>
-                                    <Text>         tokenId: {searchParams.tokenId}</Text>
-                                    <Button onClick={() => handleBack(backBtn)} >Back</Button>
-                                </Pane>
-                            }
-                        </Pane>
-                    </Portal>
                     {(displayType === "wallet") ?
                         <Wallet apiRes={apiRes} type={type} /> :
                         (displayType === "collection") ?
@@ -110,12 +115,57 @@ function Display({ apiRes, type }) {
                                             </Alert> :
                                             <>LOADING...</>
                     }
-                </Pane> : <Alert intent="danger"
+                    <Portal>
+                        <Pane
+                            height="auto"
+                            width="12.6%"
+                            position="fixed"
+                            paddingTop={8}
+                            paddingBottom={8}
+                            bottom={0}
+                            left={0}
+                            zIndex="3"
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"  >
+                            <Pane width="100%" flex={1} padding={8}>
+                                <Strong>Displaying:</Strong>
+
+                                {Object.entries(labels).map(([key, label]) => {
+                                    const val = paramsDisp[key]
+
+                                    return val ? (
+                                        <Pane key={key}
+                                        >
+                                            <Badge color="green" >{label}: </Badge>
+                                            <Pill color='orange'>{val}</Pill>
+
+                                        </Pane>
+
+                                    ) : null;
+                                })}
+
+                                <Pane paddingTop={8} zIndex="1">
+
+                                    {!backBtn ?
+
+                                        <Button intent="danger" onClick={() => handleBack(backBtn)}>Reset</Button> :
+
+                                        <Button onClick={() => handleBack(backBtn)} >Back</Button>
+                                    }
+                                </Pane>
+                            </Pane >
+                        </Pane>
+                    </Portal >
+                </Pane >
+                : <Alert intent="danger"
                     title="Error Display Data"
                 >
                     Error fetching data from server, NFT data undefined
                 </Alert>
+
             }
+
         </>
     )
 
