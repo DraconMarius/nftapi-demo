@@ -44,6 +44,7 @@
   To query blockchain data using the Alchemy NFT API / SDK requires the follow params:
  
   *You are also able to connect your browser extension wallets that utilizes the [EIPS-6963](https://eips.ethereum.org/EIPS/eip-6963) which helps avoid conflict and improves user experience. See [Snippets](#snippets) for code sample*
+  > ![gif0](/client/src/assets/connect.gif)
 
   > **All NFTs owned on multiple Networks**
   > - *wallet address*
@@ -61,6 +62,8 @@
   > - *collection address*
   > - *token Id*
   > ![gif3](/client/src/assets/NFT.gif)
+
+  
 
 
   ***
@@ -96,9 +99,6 @@
   ### Additional Spam Filtering
   You might notice there might be a discrepency on the toal count # vs the actual returned item. I had filtered the response to ensure there are no malformed or NFTs that were clearly spams on top of Alchemy's own spam filter.
   >![Snippet6](https://res.cloudinary.com/dbjhly3lm/image/upload/v1714765004/samples/code%20snippet%20and%20screenshots/Screen_Shot_2024-05-03_at_3.34.59_PM_cjgusw.png)
-
-  #### Known bugs/todo:
-  - [ ] potentially adding wallet token info to metadata
 
   ***
   ## License
