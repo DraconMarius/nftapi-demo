@@ -142,7 +142,7 @@ router.get('/nft/wallet/:net/:address/page', async (req, res) => {
             };
         } catch (err) {
             console.error(`Failed to fetch next page for ${net} network`, err);
-            return { [net]: { error: `Failed to fetch next page for ${net} network`, details: err.message } };
+            return { [net]: { error: `Failed to fetch next page for ${net} network`, details: err } };
         }
     }
     try {

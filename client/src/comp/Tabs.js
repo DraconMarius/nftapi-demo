@@ -54,6 +54,7 @@ function Tabs({ apiRes, type }) {
                     "pageKey": `${nextPageKey}`,
                     "currentKey": nextPageKey,
                     isPrevPage: false,
+                    isNew: false
                 });
                 //
             }
@@ -64,7 +65,8 @@ function Tabs({ apiRes, type }) {
             updateSearchParams({
                 ...searchParams,
                 "network": network,
-                isPrevPage: true
+                isPrevPage: true,
+                isNew: false
             })
 
 
@@ -140,7 +142,7 @@ function Tabs({ apiRes, type }) {
 
                                     aria-labelledby={network}
                                     aria-hidden={index !== selectedIndex}
-                                    display={index === selectedIndex ? 'block' : 'none'}
+                                    display={index === selectedIndex ? 'grid' : 'none'}
 
                                 >
                                     <Pane display="flex" alignItems="center" justifyContent="center" >
@@ -175,7 +177,7 @@ function Tabs({ apiRes, type }) {
                                             </Button>
                                         </a>
                                         <Button
-                                            iconBefore={CircleArrowRightIcon}
+                                            iconAfter={CircleArrowRightIcon}
                                             onClick={() => handlePageChange(network, true)}
                                             disabled={isLastPage(network)} // Disable the button on the last page
                                         >
@@ -184,7 +186,7 @@ function Tabs({ apiRes, type }) {
                                     </Pane>
 
                                     {!isGallery ? ( // if not gallery, iterate grid, if not send array to gallery
-                                        < Pane f
+                                        < Pane
                                             className="gridDisplay"
                                             gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
                                             padding={8}

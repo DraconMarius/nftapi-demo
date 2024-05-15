@@ -55,8 +55,10 @@ function Nav() {
         const search = {
             ...blankState,
             [type]: string,
-            spam: true
+            spam: true,
+            isNew: true
         }
+
         updateSearchParams(search);
     }
 
@@ -64,7 +66,8 @@ function Nav() {
         const search = {
             ...blankState,
             [type]: string,
-            "network": net
+            "network": net,
+            isNew: true
         }
         updateSearchParams(search);
     }
@@ -74,7 +77,8 @@ function Nav() {
             ...blankState,
             [type]: string,
             "network": net,
-            "tokenId": id
+            "tokenId": id,
+            isNew: true
         }
         updateSearchParams(search);
     }
@@ -134,7 +138,6 @@ function Nav() {
                 )}
                 {idOp && (
                     <TextInput
-                        width="100%"
                         placeholder="tokenId"
                         value={id}
                         onChange={e => setId(e.target.value)}
@@ -150,8 +153,9 @@ function Nav() {
                     <SearchIcon />
                 </Button>
             </Pane>
-
-            <IconButton icon={MenuIcon} appearance="minimal" onClick={() => setIsMenuOpen(!isMenuOpen)} display={['block', 'block', 'none']} className="mobile-menu-icon" />
+            <Pane className="mobile-menu-icon">
+                <IconButton icon={MenuIcon} onClick={() => setIsMenuOpen(!isMenuOpen)} />
+            </Pane>
             <Pane className="first-step" paddingLeft={8}>
                 <InfoSignIcon cursor="pointer" color="blue" onClick={() => setIsOpen(true)} />
                 <Connect />

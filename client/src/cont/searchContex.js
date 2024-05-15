@@ -26,6 +26,9 @@ export const SearchProvider = ({ children }) => {
                 const prevPageKey = updatedPrevKeys.pop() || '';
                 return { ...prev, pageKey: prevPageKey, prevKeys: updatedPrevKeys, currentKey: prevPageKey };
             }
+            if (newParams.isNew) {
+                return { ...prev, ...newParams }
+            }
 
             return { ...prev, ...newParams, prevKeys: updatedPrevKeys };
         });

@@ -44,9 +44,11 @@
   /* Prevents overflow */
 }
 
+
 .mobile-menu-icon {
   display: none;
 }
+
 
 .gridDisplay {
   display: grid;
