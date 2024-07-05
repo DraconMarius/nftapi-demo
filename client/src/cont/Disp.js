@@ -21,6 +21,12 @@ import NFT from '../comp/NFT';
 
 import { useSearch } from '../cont/searchContex';
 
+import ethereumIcon from '../assets/etherscan-logo.png'
+import arbitrumIcon from '../assets/arbitrum-logo.png'
+import optimismIcon from '../assets/optimism-logo.png'
+import polygonIcon from '../assets/polygon-logo.png'
+
+
 function Display({ apiRes, type }) {
     const [displayType, setType] = useState(type)
 
@@ -30,6 +36,8 @@ function Display({ apiRes, type }) {
     const [backBtn, setBackBtn] = useState(false)
 
     const [paramsDisp, setParamDisp] = useState([])
+
+    const [icon, setIcon] = useState()
 
     const blankState = {
         network: '',
@@ -91,6 +99,21 @@ function Display({ apiRes, type }) {
         setParamDisp(filteredParams);
     }, [searchParams])
 
+    useEffect(() => {
+
+        if (searchParams.tokenId) {
+            if (searchParams.network === "Polygon") {
+                setIcon(polygonIcon)
+            } else if (searchParams.network === "Arbitrum") {
+                setIcon(arbitrumIcon)
+            } else if (searchParams.network === "Optimism") {
+                setIcon(optimismIcon)
+            } else {
+                setIcon(ethereumIcon)
+            }
+        }
+
+    }, [searchParams.network, searchParams.tokenId]);
 
     return (
 
@@ -102,7 +125,7 @@ function Display({ apiRes, type }) {
                         (displayType === "collection") ?
                             <Collections apiRes={apiRes} type={type} /> :
                             (displayType === "NFT") ?
-                                <NFT apiRes={apiRes} type={type} /> :
+                                <NFT apiRes={apiRes} type={type} icon={icon} /> :
                                 (displayType === "collectionP") ?
                                     <Tabs apiRes={apiRes} type={type} /> :
                                     (displayType === "walletP") ?

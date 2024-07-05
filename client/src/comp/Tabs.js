@@ -9,7 +9,8 @@ import {
     Pill,
     SearchIcon,
     Switch,
-    Paragraph
+    Paragraph,
+    Icon
 } from 'evergreen-ui';
 
 
@@ -17,6 +18,13 @@ import Grid from './Grid';
 import Gallery from './Gallery'
 import Metadata from "./Metadata"
 import { useSearch } from '../cont/searchContex';
+
+import scanUrl from '../util/scan';
+import ethereumIcon from '../assets/etherscan-logo.png'
+import arbitrumIcon from '../assets/arbitrum-logo.png'
+import optimismIcon from '../assets/optimism-logo.png'
+import polygonIcon from '../assets/polygon-logo.png'
+
 
 function Tabs({ apiRes, type }) {
     // console.log(apiRes)
@@ -27,15 +35,18 @@ function Tabs({ apiRes, type }) {
     const [isGallery, setGallery] = useState(false)
 
     const networks = Object.keys(apiRes);
+    const networkIcons = {
+        Eth: ethereumIcon,
+        Arbitrum: arbitrumIcon,
+        Optimism: optimismIcon,
+        Polygon: polygonIcon,
+        Base: ethereumIcon
+    }
     // Calculate firstPage and lastPage based on current apiRes and searchParams
     const isFirstPage = (searchParams.prevKeys && (searchParams.prevKeys.length === 0) && !searchParams.currentKey);
     const isLastPage = network => !apiRes[network]?.pageKey;
 
     console.log(`first page:${isFirstPage}, last page:${isLastPage("Eth")}`)
-
-    const address = searchParams.walletAdd || searchParams.contractAdd || searchParams.collectionAdd
-
-    const etherscanURL = `https://etherscan.io/address/${address}`
 
     //pagekey logic is within searchContext, 
     const handlePageChange = (network, isNext) => {
@@ -132,78 +143,84 @@ function Tabs({ apiRes, type }) {
                             ))}
                         </Tablist>
                         <Pane padding={8} flex="1" background="rgba(249, 250, 252, 0.9)" marginBottom={16}>
-                            {networks.map((network, index) => (
+                            {networks.map((network, index) => {
+                                const address = searchParams.walletAdd || searchParams.contractAdd || searchParams.collectionAdd
+                                const etherscanURL = `${scanUrl[network]}address/${address}`
+                                return (
 
-                                <Pane
+                                    <Pane
 
-                                    key={network}
-                                    id={`panel-${network}`}
-                                    role="tabpanel"
+                                        key={network}
+                                        id={`panel-${network}`}
+                                        role="tabpanel"
 
-                                    aria-labelledby={network}
-                                    aria-hidden={index !== selectedIndex}
-                                    display={index === selectedIndex ? 'grid' : 'none'}
+                                        aria-labelledby={network}
+                                        aria-hidden={index !== selectedIndex}
+                                        display={index === selectedIndex ? 'grid' : 'none'}
 
-                                >
-                                    <Pane display="flex" alignItems="center" justifyContent="center" >
-                                        <Paragraph>
-                                            Spam Protection:
-                                        </Paragraph>
-                                        <Switch checked={checked} onChange={(e) => spamToggle(e.target.checked)} padding={8} />
-                                    </Pane>
-                                    <Pane display="flex" alignItems="center" justifyContent="center" >
-                                        <Paragraph>
-                                            Gallery View?:
-                                        </Paragraph>
-                                        <Switch checked={isGallery} onChange={(e) => setGallery(e.target.checked)} padding={8} />
-                                    </Pane>
-                                    <Pane display="flex" justifyContent="space-between" alignItems="center" padding={8}>
-                                        <Button
-                                            iconBefore={CircleArrowLeftIcon}
-                                            onClick={() => handlePageChange(network, false)}
-                                            disabled={isFirstPage} // Disable the button on the first page
-                                        >
-                                            Prev
-                                        </Button>
-                                        <a href={etherscanURL}
-                                        >
-
+                                    >
+                                        <Pane display="flex" alignItems="center" justifyContent="center" >
+                                            <Paragraph>
+                                                Spam Protection:
+                                            </Paragraph>
+                                            <Switch checked={checked} onChange={(e) => spamToggle(e.target.checked)} padding={8} />
+                                        </Pane>
+                                        <Pane display="flex" alignItems="center" justifyContent="center" >
+                                            <Paragraph>
+                                                Gallery View?:
+                                            </Paragraph>
+                                            <Switch checked={isGallery} onChange={(e) => setGallery(e.target.checked)} padding={8} />
+                                        </Pane>
+                                        <Pane display="flex" justifyContent="space-between" alignItems="center" padding={8}>
                                             <Button
-                                                appearance='minimal'
-                                                color="grey"
+                                                iconBefore={CircleArrowLeftIcon}
+                                                onClick={() => handlePageChange(network, false)}
+                                                disabled={isFirstPage} // Disable the button on the first page
                                             >
-                                                <SearchIcon />
-                                                EtherScan
+                                                Prev
                                             </Button>
-                                        </a>
-                                        <Button
-                                            iconAfter={CircleArrowRightIcon}
-                                            onClick={() => handlePageChange(network, true)}
-                                            disabled={isLastPage(network)} // Disable the button on the last page
-                                        >
-                                            Next
-                                        </Button>
-                                    </Pane>
+                                            <a href={etherscanURL}
+                                            >
 
-                                    {!isGallery ? ( // if not gallery, iterate grid, if not send array to gallery
-                                        < Pane
-                                            className="gridDisplay"
-                                            gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
-                                            padding={8}
-                                        >
-                                            {apiRes[network]?.okNfts.map((item, itemIndex) => (
-                                                <Grid
-                                                    key={itemIndex}
-                                                    imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl}
-                                                    fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
-                                                    name={item.name || item.raw.metadata.name}
-                                                    contractAdd={item.contract.address}
-                                                    id={item.tokenId}
-                                                    net={network} />
-                                            ))}
-                                        </Pane>) : (<Gallery images={apiRes[network]?.okNfts} net={network} />)}
-                                </Pane>
-                            ))}
+                                                <Button
+                                                    appearance='minimal'
+                                                    color="grey"
+                                                >
+
+                                                    <img width="18px" src={networkIcons[network]} />
+
+                                                    <SearchIcon />
+                                                </Button>
+                                            </a>
+                                            <Button
+                                                iconAfter={CircleArrowRightIcon}
+                                                onClick={() => handlePageChange(network, true)}
+                                                disabled={isLastPage(network)} // Disable the button on the last page
+                                            >
+                                                Next
+                                            </Button>
+                                        </Pane>
+
+                                        {!isGallery ? ( // if not gallery, iterate grid, if not send array to gallery
+                                            < Pane
+                                                className="gridDisplay"
+                                                gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
+                                                padding={8}
+                                            >
+                                                {apiRes[network]?.okNfts.map((item, itemIndex) => (
+                                                    <Grid
+                                                        key={itemIndex}
+                                                        imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl}
+                                                        fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
+                                                        name={item.name || item.raw.metadata.name}
+                                                        contractAdd={item.contract.address}
+                                                        id={item.tokenId}
+                                                        net={network} />
+                                                ))}
+                                            </Pane>) : (<Gallery images={apiRes[network]?.okNfts} net={network} />)}
+                                    </Pane>
+                                )
+                            })}
                         </Pane>
                     </Pane></Pane>) : (apiRes && ((type === "collection") || (type === "collectionP"))) ?
 
@@ -241,66 +258,72 @@ function Tabs({ apiRes, type }) {
                                 ))}
                             </Tablist>
                             <Pane padding={8} flex="1">
-                                {networks.map((network, index) => (
-                                    <Pane
-                                        key={network}
-                                        id={`panel-${network}`}
-                                        role="tabpanel"
-                                        aria-labelledby={network}
-                                        aria-hidden={index !== selectedIndex}
-                                        display={index === selectedIndex ? 'grid' : 'none'}
-                                    >
-                                        <Pane display="flex" alignItems="center" justifyContent="center" >
-                                            <Paragraph>
-                                                Gallery View?:
-                                            </Paragraph>
-                                            <Switch checked={isGallery} onChange={(e) => setGallery(e.target.checked)} padding={8} />
-                                        </Pane>
-                                        <Pane display="flex" justifyContent="space-between" padding={16}>
-                                            <Button
-                                                iconBefore={CircleArrowLeftIcon}
-                                                onClick={() => handlePageChange(network, false)}
-                                                disabled={isFirstPage} // Disable the button on the first page
-                                            >
-                                                Prev
-                                            </Button>
-                                            <a href={etherscanURL}
-                                            >
-
+                                {networks.map((network, index) => {
+                                    const address = searchParams.walletAdd || searchParams.contractAdd || searchParams.collectionAdd
+                                    const etherscanURL = `${scanUrl[network]}address/${address}`
+                                    return (
+                                        <Pane
+                                            key={network}
+                                            id={`panel-${network}`}
+                                            role="tabpanel"
+                                            aria-labelledby={network}
+                                            aria-hidden={index !== selectedIndex}
+                                            display={index === selectedIndex ? 'grid' : 'none'}
+                                        >
+                                            <Pane display="flex" alignItems="center" justifyContent="center" >
+                                                <Paragraph>
+                                                    Gallery View?:
+                                                </Paragraph>
+                                                <Switch checked={isGallery} onChange={(e) => setGallery(e.target.checked)} padding={8} />
+                                            </Pane>
+                                            <Pane display="flex" justifyContent="space-between" padding={16}>
                                                 <Button
-                                                    appearance='minimal'
-                                                    color="grey"
+                                                    iconBefore={CircleArrowLeftIcon}
+                                                    onClick={() => handlePageChange(network, false)}
+                                                    disabled={isFirstPage} // Disable the button on the first page
                                                 >
-                                                    <SearchIcon />
-                                                    EtherScan
+                                                    Prev
                                                 </Button>
-                                            </a>
-                                            <Button
-                                                iconAfter={CircleArrowRightIcon}
-                                                onClick={() => handlePageChange(network, true)}
-                                                disabled={isLastPage(network)} // Disable the button on the last page
-                                            >
-                                                Next
-                                            </Button>
+                                                <a href={etherscanURL}
+                                                >
+
+                                                    <Button
+                                                        appearance='minimal'
+                                                        color="grey"
+                                                    >
+
+                                                        <img width="18px" src={networkIcons[network]} />
+
+                                                        <SearchIcon />
+                                                    </Button>
+                                                </a>
+                                                <Button
+                                                    iconAfter={CircleArrowRightIcon}
+                                                    onClick={() => handlePageChange(network, true)}
+                                                    disabled={isLastPage(network)} // Disable the button on the last page
+                                                >
+                                                    Next
+                                                </Button>
+                                            </Pane>
+                                            {!isGallery ? ( // if not gallery, iterate grid, if not send array to gallery
+                                                < Pane flex="1" justifyContent="center" display="grid"
+                                                    gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
+                                                    padding={8}
+                                                >
+                                                    {apiRes[network]?.okNfts.map((item, itemIndex) => (
+                                                        <Grid
+                                                            key={itemIndex}
+                                                            imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl || item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
+                                                            fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
+                                                            name={item.name || item.raw.metadata.name}
+                                                            contractAdd={item.contract.address}
+                                                            id={item.tokenId}
+                                                            net={network} />
+                                                    ))}
+                                                </Pane>) : (<Gallery images={apiRes[network]?.okNfts} net={network} />)}
                                         </Pane>
-                                        {!isGallery ? ( // if not gallery, iterate grid, if not send array to gallery
-                                            < Pane flex="1" justifyContent="center" display="grid"
-                                                gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr)) "
-                                                padding={8}
-                                            >
-                                                {apiRes[network]?.okNfts.map((item, itemIndex) => (
-                                                    <Grid
-                                                        key={itemIndex}
-                                                        imageUrl={item.image.cachedUrl || item.image.thumbnailUrl || item.image.pngUrl || item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
-                                                        fallbackUrl={item.contract.openSeaMetadata.imageUrl || "https://placehold.co/200x200"}
-                                                        name={item.name || item.raw.metadata.name}
-                                                        contractAdd={item.contract.address}
-                                                        id={item.tokenId}
-                                                        net={network} />
-                                                ))}
-                                            </Pane>) : (<Gallery images={apiRes[network]?.okNfts} net={network} />)}
-                                    </Pane>
-                                ))}
+                                    )
+                                })}
                             </Pane>
                         </Pane >
                     </Pane>) : <Pane />

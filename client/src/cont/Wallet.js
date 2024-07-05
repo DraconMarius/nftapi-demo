@@ -3,7 +3,7 @@ import React from 'react';
 import Tabs from '../comp/Tabs'
 
 
-function Wallet({ apiRes, type }) {
+function Wallet({ apiRes, type}) {
 
 
 
