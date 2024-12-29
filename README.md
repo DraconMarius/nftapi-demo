@@ -37,8 +37,12 @@
 
   ***if you are indeed hosting your own version, please ensure that there is a `.env` file with your Alchemy API Key set up correctly in your project!***
 
+  > **If you would like to host a heroku version of it privately**, make sure you have heroku CLI installed, and at the root of the project run `heroku create app_name`. After we confirmed that it has been deployed. Navigate to your heroku project page and ensure that all of your env var is set.
+  >
+  > ![envvar](/client/src/assets/envvar.png)
 
   ***
+
   ## Usage
 
   To query blockchain data using the Alchemy NFT API / SDK requires the follow params:
@@ -46,25 +50,32 @@
   *You are also able to connect your browser extension wallets that utilizes the [EIPS-6963](https://eips.ethereum.org/EIPS/eip-6963) which helps avoid conflict and improves user experience. See [Snippets](#snippets) for code sample*
   > ![gif0](/client/src/assets/connect.gif)
 
-  > **All NFTs owned on multiple Networks**
+  > **All NFTs owned on multiple Networks `/api/nft/wallet/:net/:address/(page)`**
+  > *`alchemy.nft.getNFTsForOwner()`*
   > - *wallet address*
   > - *pageKey (optional)*
+  > - *optional config* (excludeFilters: [NftFilters.SPAM], pageSize: 30)
+  >
+  > In addition to Alchemy's own spam filters (available in higher tiers), I also filtered out any NFTs with malformed nft image links, along with any that include `stolen` or `spam` in their description.
+  >
   > ![gif1](/client/src/assets/tour.gif)
 
-  > **All NFTs from a Contract on specific Network**
+  > **All NFTs from a Contract on specific Network `/api/nft/collection/:net/:address`**
+  > *`alchemy.nft.getNftsForContract`*
   > - *network*
   > - *collection address*
   > - *pageKey (optional)*
+  > - *optional config* (excludeFilters: [NftFilters.SPAM], pageSize: 30)
+  >
   > ![gif2](/client/src/assets/page.gif)
 
-  > **Singular NFT from a Contract on specific Network**
+  > **Singular NFT from a Contract on specific Network `/api/nft/:net/:id/:address`**
+  > *`alchemy.nft.getNftMetadata()`*
   > - *network*
   > - *collection address*
   > - *token Id*
+  >
   > ![gif3](/client/src/assets/NFT.gif)
-
-  
-
 
   ***
 
